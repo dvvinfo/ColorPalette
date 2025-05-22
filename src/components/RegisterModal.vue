@@ -57,13 +57,21 @@
               placeholder="Подтвердите пароль"
               required
               :error="!!errorMessage"
+              :disabled="loading"
             />
             <div v-if="errorMessage" class="text-red-500 text-xs mt-1">{{ errorMessage }}</div>
           </Field>
+          <div v-if="error" class="text-red-500 text-sm">{{ error }}</div>
         </div>
-        <BaseButton type="submit" variant="primary" class="w-full mt-4" :disabled="!meta.valid"
-          >Зарегистрироваться</BaseButton
+        <BaseButton
+          type="submit"
+          variant="primary"
+          class="w-full mt-4"
+          :disabled="!meta.valid || loading"
+          :loading="loading"
         >
+          {{ loading ? 'Регистрация...' : 'Зарегистрироваться' }}
+        </BaseButton>
       </Form>
     </div>
   </div>
@@ -74,6 +82,12 @@ import BaseInput from './BaseInput.vue'
 import BaseButton from './BaseButton.vue'
 import { Form, Field } from 'vee-validate'
 import * as yup from 'yup'
+import { useAuthStore } from '@/stores/auth'
+import { ref } from 'vue'
+
+const authStore = useAuthStore()
+const loading = ref(false)
+const error = ref<string | null>(null)
 
 const schema = yup.object({
   email: yup.string().email('Введите корректный email').required('Email обязателен'),
@@ -84,7 +98,7 @@ const schema = yup.object({
     .required('Имя пользователя обязательно'),
   password: yup
     .string()
-    .min(6, 'Минимум 6 символов')
+    .min(5, 'Минимум 5 символов')
     .matches(/[A-Z]/, 'Пароль должен содержать хотя бы одну заглавную букву')
     .matches(/[0-9]/, 'Пароль должен содержать хотя бы одну цифру')
     .required('Пароль обязателен'),
@@ -94,19 +108,30 @@ const schema = yup.object({
     .required('Подтверждение пароля обязательно'),
 })
 
-function onSubmit(values: Record<string, unknown>) {
-  // Здесь будет POST /register
-  // payload: values
-  // Ожидается JWT токен
-  emit('success', {
-    username: values.username as string,
-    email: values.email as string,
-    password: values.password as string,
-  })
+async function onSubmit(values: Record<string, unknown>) {
+  try {
+    loading.value = true
+    error.value = null
+    const success = await authStore.register(
+      values.email as string,
+      values.username as string,
+      values.password as string,
+    )
+    if (success) {
+      setTimeout(() => {
+        emit('close')
+      }, 500)
+    } else {
+      error.value = 'Ошибка при регистрации'
+    }
+  } catch (err) {
+    error.value = err instanceof Error ? err.message : 'Произошла ошибка при регистрации'
+  } finally {
+    loading.value = false
+  }
 }
 
 const emit = defineEmits<{
   (e: 'close'): void
-  (e: 'success', data: { username: string; email: string; password: string }): void
 }>()
 </script>

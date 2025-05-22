@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { useAuthStore } from './stores/auth'
 import AuthModal from './components/AuthModal.vue'
 import RegisterModal from './components/RegisterModal.vue'
 import AppHeader from './components/AppHeader.vue'
@@ -9,7 +8,6 @@ import NotificationModal from './components/NotificationModal.vue'
 import AppFooter from './components/AppFooter.vue'
 import DepositModal from './components/DepositModal.vue'
 
-const authStore = useAuthStore()
 const showLoginModal = ref(false)
 const showRegisterModal = ref(false)
 const showMessages = ref(false)
@@ -56,7 +54,8 @@ function markAllMessagesRead() {
 watch(
   messages,
   (val) => {
-    if (authStore.user) authStore.user.messagesCount = val.filter((m) => !m.read).length
+    // Обновляем только локальное состояние
+    messages.value = val
   },
   { deep: true },
 )
@@ -64,67 +63,11 @@ watch(
 watch(
   notifications,
   (val) => {
-    if (authStore.user) authStore.user.notificationsCount = val.length
+    // Обновляем только локальное состояние
+    notifications.value = val
   },
   { deep: true },
 )
-
-interface LoginData {
-  email: string
-  password: string
-}
-
-interface RegisterData {
-  username: string
-  email: string
-  password: string
-}
-
-// onMounted(() => {
-//   if (!authStore.isAuthenticated) {
-//     authStore.login({
-//       username: 'testuser',
-//       rank: 'Новичок',
-//       percentage: 0,
-//       avatarUrl: 'https://www.gravatar.com/avatar/test',
-//       messagesCount: 1,
-//       notificationsCount: 2,
-//       cashback: 0,
-//       points: 0,
-//       balance: 0,
-//     })
-//   }
-// })
-
-const handleLoginSuccess = (userData: LoginData) => {
-  authStore.login({
-    username: userData.email.split('@')[0],
-    rank: 'Новичок',
-    percentage: 0,
-    avatarUrl: '/images/user/avatar.png',
-    messagesCount: 1,
-    notificationsCount: 9,
-    cashback: 0,
-    points: 0,
-    balance: 0,
-  })
-  showLoginModal.value = false
-}
-
-const handleRegisterSuccess = (userData: RegisterData) => {
-  authStore.login({
-    username: userData.username,
-    rank: 'Новичок',
-    percentage: 0,
-    avatarUrl: '/images/user/avatar.png',
-    messagesCount: 0,
-    notificationsCount: 0,
-    cashback: 0,
-    points: 0,
-    balance: 0,
-  })
-  showRegisterModal.value = false
-}
 </script>
 
 <template>
@@ -143,16 +86,8 @@ const handleRegisterSuccess = (userData: RegisterData) => {
     <AppFooter />
 
     <!-- Модалки -->
-    <AuthModal
-      v-if="showLoginModal"
-      @close="showLoginModal = false"
-      @success="handleLoginSuccess"
-    />
-    <RegisterModal
-      v-if="showRegisterModal"
-      @close="showRegisterModal = false"
-      @success="handleRegisterSuccess"
-    />
+    <AuthModal v-if="showLoginModal" @close="showLoginModal = false" />
+    <RegisterModal v-if="showRegisterModal" @close="showRegisterModal = false" />
     <MessageModal
       v-if="showMessages"
       :messages="messages"

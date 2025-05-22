@@ -27,6 +27,7 @@
               placeholder="Email"
               required
               :error="!!errorMessage"
+              :disabled="loading"
             />
             <div v-if="errorMessage" class="text-red-500 text-xs mt-1">{{ errorMessage }}</div>
           </Field>
@@ -37,13 +38,21 @@
               placeholder="Пароль"
               required
               :error="!!errorMessage"
+              :disabled="loading"
             />
             <div v-if="errorMessage" class="text-red-500 text-xs mt-1">{{ errorMessage }}</div>
           </Field>
+          <div v-if="error" class="text-red-500 text-sm">{{ error }}</div>
         </div>
-        <BaseButton type="submit" variant="primary" class="w-full mt-4" :disabled="!meta.valid"
-          >Войти</BaseButton
+        <BaseButton
+          type="submit"
+          variant="primary"
+          class="w-full mt-4"
+          :disabled="!meta.valid || loading"
+          :loading="loading"
         >
+          {{ loading ? 'Вход...' : 'Войти' }}
+        </BaseButton>
       </Form>
     </div>
   </div>
@@ -54,25 +63,39 @@ import BaseInput from './BaseInput.vue'
 import BaseButton from './BaseButton.vue'
 import { Form, Field } from 'vee-validate'
 import * as yup from 'yup'
+import { useAuthStore } from '@/stores/auth'
+import { ref } from 'vue'
+
+const authStore = useAuthStore()
+const loading = ref(false)
+const error = ref<string | null>(null)
 
 const schema = yup.object({
-  email: yup.string().email('Введите корректный email').required('Email обязателен'),
-  password: yup.string().min(6, 'Минимум 6 символов').required('Пароль обязателен'),
+  email: yup.string().email('Неверный формат email').required('Email обязателен'),
+  password: yup.string().min(5, 'Минимум 6 символов').required('Пароль обязателен'),
 })
 
-function onSubmit(values: Record<string, unknown>) {
-  // Здесь будет POST /login
-  // payload: values
-  // Ожидается JWT токен
-  emit('success', {
-    email: values.email as string,
-    password: values.password as string,
-  })
+async function onSubmit(values: Record<string, unknown>) {
+  try {
+    loading.value = true
+    error.value = null
+    const success = await authStore.login(values.email as string, values.password as string)
+    if (success) {
+      setTimeout(() => {
+        emit('close')
+      }, 500)
+    } else {
+      error.value = 'Неверный email или пароль'
+    }
+  } catch (err) {
+    error.value = err instanceof Error ? err.message : 'Произошла ошибка при входе'
+  } finally {
+    loading.value = false
+  }
 }
 
 const emit = defineEmits<{
   (e: 'close'): void
-  (e: 'success', data: { email: string; password: string }): void
 }>()
 </script>
 

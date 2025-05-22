@@ -4,7 +4,6 @@
       class="container mx-auto px-4 py-3 flex flex-col gap-4 md:gap-0 md:flex-row items-center justify-between"
     >
       <!-- Логотип -->
-
       <div class="text-primary font-bold text-3xl">
         <span class="text-primary">Казино</span>
       </div>
@@ -19,16 +18,14 @@
           <div class="flex items-center gap-2 cursor-pointer" @click="router.push('/profile')">
             <div class="text-sm">
               <div class="text-white">{{ authStore.user.username }}</div>
-              <div class="text-gray-400">
-                {{ authStore.user.rank }} · {{ authStore.user.percentage }}%
-              </div>
+              <!-- <div class="text-gray-400">{{ authStore.user.role.name }}</div> -->
             </div>
-            <div class="w-10 h-10 rounded-full overflow-hidden">
-              <img
-                :src="authStore.user.avatarUrl"
-                alt="Аватар пользователя"
-                class="w-full h-full object-cover"
-              />
+            <div
+              class="w-10 h-10 rounded-full overflow-hidden bg-primary/20 flex items-center justify-center"
+            >
+              <span class="text-primary text-lg font-bold">{{
+                authStore.user.username.charAt(0).toUpperCase()
+              }}</span>
             </div>
           </div>
           <!-- Сообщения и уведомления -->
@@ -48,12 +45,6 @@
                   d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
                 />
               </svg>
-              <span
-                v-if="authStore.user.messagesCount > 0"
-                class="absolute -top-1 -right-1 bg-primary text-white text-xs rounded-full w-4 h-4 flex items-center justify-center"
-              >
-                {{ authStore.user.messagesCount }}
-              </span>
             </button>
             <button class="relative" @click="emit('openNotifications')">
               <svg
@@ -70,25 +61,11 @@
                   d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
                 />
               </svg>
-              <span
-                v-if="authStore.user.notificationsCount > 0"
-                class="absolute -top-1 -right-1 bg-primary text-white text-xs rounded-full w-4 h-4 flex items-center justify-center"
-              >
-                {{ authStore.user.notificationsCount }}
-              </span>
             </button>
           </div>
         </div>
         <!-- Баланс -->
         <div class="flex items-center gap-4">
-          <div class="text-sm">
-            <div class="text-gray-400">Кэшбэк</div>
-            <div class="text-white">{{ authStore.user.cashback }} ₽</div>
-          </div>
-          <div class="text-sm">
-            <div class="text-gray-400">Баллы</div>
-            <div class="text-white">{{ authStore.user.points }}</div>
-          </div>
           <div class="text-sm">
             <div class="text-gray-400">На счете</div>
             <div class="text-white">{{ authStore.user.balance }} ₽</div>

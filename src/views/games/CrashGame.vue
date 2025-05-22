@@ -3,14 +3,14 @@
     <div class="bg-card-bg rounded-lg p-6">
       <div class="flex items-center gap-4 mb-6">
         <BackButton />
-        <h1 class="text-2xl font-bold">Кости</h1>
+        <h1 class="text-2xl font-bold">Краш</h1>
       </div>
 
       <!-- Игровое поле -->
       <div class="aspect-video bg-black/20 rounded-lg flex items-center justify-center mb-6">
         <iframe
           ref="gameFrame"
-          src="https://elfaz19.github.io/dice-game-/"
+          src="https://crash-game-demo.vercel.app/"
           class="w-full h-full rounded-lg"
           frameborder="0"
         ></iframe>
@@ -105,13 +105,13 @@ async function onPlay() {
   const num = Number(bet.value)
   if (!isNaN(num) && num >= 1 && num <= (authStore.user?.balance || 0)) {
     try {
-      // Используем ID 5 для игры в кости (из моковых данных)
-      await gamesStore.playGame(5, num)
+      // Используем ID 1 для краша (из моковых данных)
+      await gamesStore.playGame(1, num)
       await authStore.fetchUser() // Обновляем баланс
 
       // Запускаем анимацию в iframe
       if (gameFrame.value?.contentWindow) {
-        gameFrame.value.contentWindow.postMessage({ type: 'ROLL_DICE' }, '*')
+        gameFrame.value.contentWindow.postMessage({ type: 'START_CRASH' }, '*')
       }
 
       bet.value = '' // Очищаем поле ставки
@@ -123,6 +123,6 @@ async function onPlay() {
 
 onMounted(async () => {
   // Загружаем информацию об игре
-  await gamesStore.fetchGameById(5)
+  await gamesStore.fetchGameById(1)
 })
 </script>

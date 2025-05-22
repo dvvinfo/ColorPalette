@@ -5,7 +5,8 @@
     <div class="flex flex-col md:flex-row gap-6 mt-8">
       <div class="w-full md:w-3/4">
         <!-- Game Categories -->
-        <GameGrid />
+        <GameGrid class="mb-8" />
+        <BackendGameGrid />
       </div>
 
       <div class="w-full md:w-1/4">
@@ -35,6 +36,7 @@ import ThemeSwitcher from '../components/ThemeSwitcher.vue'
 import AuthModal from '../components/AuthModal.vue'
 import RegisterModal from '../components/RegisterModal.vue'
 import BonusCard from '../components/BonusCard.vue'
+import BackendGameGrid from '../components/BackendGameGrid.vue'
 const showAuth = ref(false)
 const showRegister = ref(false)
 </script>

@@ -3,17 +3,23 @@
     <div class="bg-card-bg rounded-lg p-6">
       <div class="flex items-center gap-4 mb-6">
         <BackButton />
-        <h1 class="text-2xl font-bold">Кости</h1>
+        <h1 class="text-2xl font-bold">{{ game?.name }}</h1>
       </div>
 
       <!-- Игровое поле -->
       <div class="aspect-video bg-black/20 rounded-lg flex items-center justify-center mb-6">
-        <iframe
-          ref="gameFrame"
-          src="https://elfaz19.github.io/dice-game-/"
-          class="w-full h-full rounded-lg"
-          frameborder="0"
-        ></iframe>
+        <div v-if="game" class="text-center">
+          <div class="text-4xl mb-4">
+            {{ lastResult ? (lastResult.result === 'win' ? '🎉' : '😢') : '🎲' }}
+          </div>
+          <div v-if="lastResult" class="text-xl">
+            {{
+              lastResult.result === 'win'
+                ? `Выигрыш: ${lastResult.win_amount} ₽`
+                : 'Попробуйте еще раз!'
+            }}
+          </div>
+        </div>
       </div>
 
       <!-- Форма ставки -->
@@ -56,39 +62,40 @@
           <div v-if="gamesStore.error" class="text-red-500 text-sm text-center">
             {{ gamesStore.error }}
           </div>
-
-          <div v-if="lastResult" class="text-center">
-            <div class="text-2xl mb-2">
-              {{ lastResult.result === 'win' ? '🎉' : '😢' }}
-            </div>
-            <div class="text-xl">
-              {{
-                lastResult.result === 'win'
-                  ? `Выигрыш: ${lastResult.win_amount} ₽`
-                  : 'Попробуйте еще раз!'
-              }}
-            </div>
-          </div>
         </div>
       </form>
+
+      <!-- Информация об игре -->
+      <div v-if="game" class="mt-8 grid grid-cols-2 gap-4 text-center">
+        <div class="bg-black/20 p-4 rounded-lg">
+          <div class="text-gray-400">RTP</div>
+          <div class="text-xl font-bold">{{ game.rtp }}%</div>
+        </div>
+        <div class="bg-black/20 p-4 rounded-lg">
+          <div class="text-gray-400">Шанс выигрыша</div>
+          <div class="text-xl font-bold">{{ game.chance }}%</div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import BackButton from '@/components/BackButton.vue'
 import BaseInput from '@/components/BaseInput.vue'
 import BaseButton from '@/components/BaseButton.vue'
 import { useGamesStore } from '@/stores/games'
 import { useAuthStore } from '@/stores/auth'
 
+const route = useRoute()
 const gamesStore = useGamesStore()
 const authStore = useAuthStore()
 const bet = ref<string | number>('')
 const presets = [50, 100, 500, 1000]
-const gameFrame = ref<HTMLIFrameElement | null>(null)
 
+const game = computed(() => gamesStore.currentGame)
 const lastResult = computed(() => gamesStore.lastPlayResult)
 
 const isValid = computed(() => {
@@ -105,15 +112,8 @@ async function onPlay() {
   const num = Number(bet.value)
   if (!isNaN(num) && num >= 1 && num <= (authStore.user?.balance || 0)) {
     try {
-      // Используем ID 5 для игры в кости (из моковых данных)
-      await gamesStore.playGame(5, num)
+      await gamesStore.playGame(Number(route.params.id), num)
       await authStore.fetchUser() // Обновляем баланс
-
-      // Запускаем анимацию в iframe
-      if (gameFrame.value?.contentWindow) {
-        gameFrame.value.contentWindow.postMessage({ type: 'ROLL_DICE' }, '*')
-      }
-
       bet.value = '' // Очищаем поле ставки
     } catch (error) {
       console.error('Ошибка при игре:', error)
@@ -122,7 +122,9 @@ async function onPlay() {
 }
 
 onMounted(async () => {
-  // Загружаем информацию об игре
-  await gamesStore.fetchGameById(5)
+  const gameId = Number(route.params.id)
+  if (gameId) {
+    await gamesStore.fetchGameById(gameId)
+  }
 })
 </script>

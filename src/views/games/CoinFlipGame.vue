@@ -3,14 +3,14 @@
     <div class="bg-card-bg rounded-lg p-6">
       <div class="flex items-center gap-4 mb-6">
         <BackButton />
-        <h1 class="text-2xl font-bold">Кости</h1>
+        <h1 class="text-2xl font-bold">Монетка</h1>
       </div>
 
       <!-- Игровое поле -->
       <div class="aspect-video bg-black/20 rounded-lg flex items-center justify-center mb-6">
         <iframe
           ref="gameFrame"
-          src="https://elfaz19.github.io/dice-game-/"
+          src="https://coinflip-game-demo.vercel.app/"
           class="w-full h-full rounded-lg"
           frameborder="0"
         ></iframe>
@@ -44,11 +44,32 @@
             </BaseButton>
           </div>
 
+          <div class="flex gap-4 justify-center">
+            <BaseButton
+              type="button"
+              variant="outline"
+              class="flex-1 py-3 font-bold text-lg"
+              :class="{ 'bg-green-600 text-white': selectedSide === 'heads' }"
+              @click="selectedSide = 'heads'"
+            >
+              Орёл
+            </BaseButton>
+            <BaseButton
+              type="button"
+              variant="outline"
+              class="flex-1 py-3 font-bold text-lg"
+              :class="{ 'bg-green-600 text-white': selectedSide === 'tails' }"
+              @click="selectedSide = 'tails'"
+            >
+              Решка
+            </BaseButton>
+          </div>
+
           <BaseButton
             type="submit"
             variant="primary"
             class="bg-red-600 hover:bg-red-700 text-white text-lg font-bold py-3 rounded-lg"
-            :disabled="!isValid || gamesStore.loading"
+            :disabled="!isValid || gamesStore.loading || !selectedSide"
           >
             {{ gamesStore.loading ? 'Загрузка...' : 'Играть' }}
           </BaseButton>
@@ -88,6 +109,7 @@ const authStore = useAuthStore()
 const bet = ref<string | number>('')
 const presets = [50, 100, 500, 1000]
 const gameFrame = ref<HTMLIFrameElement | null>(null)
+const selectedSide = ref<'heads' | 'tails' | null>(null)
 
 const lastResult = computed(() => gamesStore.lastPlayResult)
 
@@ -103,18 +125,25 @@ function onBetInput(e: Event) {
 
 async function onPlay() {
   const num = Number(bet.value)
-  if (!isNaN(num) && num >= 1 && num <= (authStore.user?.balance || 0)) {
+  if (!isNaN(num) && num >= 1 && num <= (authStore.user?.balance || 0) && selectedSide.value) {
     try {
-      // Используем ID 5 для игры в кости (из моковых данных)
-      await gamesStore.playGame(5, num)
+      // Используем ID 3 для монетки (из моковых данных)
+      await gamesStore.playGame(3, num)
       await authStore.fetchUser() // Обновляем баланс
 
       // Запускаем анимацию в iframe
       if (gameFrame.value?.contentWindow) {
-        gameFrame.value.contentWindow.postMessage({ type: 'ROLL_DICE' }, '*')
+        gameFrame.value.contentWindow.postMessage(
+          {
+            type: 'FLIP_COIN',
+            side: selectedSide.value,
+          },
+          '*',
+        )
       }
 
       bet.value = '' // Очищаем поле ставки
+      selectedSide.value = null // Сбрасываем выбор стороны
     } catch (error) {
       console.error('Ошибка при игре:', error)
     }
@@ -123,6 +152,6 @@ async function onPlay() {
 
 onMounted(async () => {
   // Загружаем информацию об игре
-  await gamesStore.fetchGameById(5)
+  await gamesStore.fetchGameById(3)
 })
 </script>
