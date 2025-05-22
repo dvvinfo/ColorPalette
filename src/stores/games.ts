@@ -58,6 +58,10 @@ export const useGamesStore = defineStore('games', () => {
     }
   }
 
+  async function createGame(data: { name: string; chance: number; rtp: number }) {
+    return await gamesApi.create(data)
+  }
+
   return {
     games,
     currentGame,
@@ -67,5 +71,6 @@ export const useGamesStore = defineStore('games', () => {
     fetchGames,
     fetchGameById,
     playGame,
+    createGame,
   }
 })

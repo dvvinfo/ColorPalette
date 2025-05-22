@@ -110,6 +110,7 @@ const bet = ref<string | number>('')
 const presets = [50, 100, 500, 1000]
 const gameFrame = ref<HTMLIFrameElement | null>(null)
 const selectedSide = ref<'heads' | 'tails' | null>(null)
+const createdGameId = ref<number | null>(null)
 
 const lastResult = computed(() => gamesStore.lastPlayResult)
 
@@ -125,10 +126,15 @@ function onBetInput(e: Event) {
 
 async function onPlay() {
   const num = Number(bet.value)
-  if (!isNaN(num) && num >= 1 && num <= (authStore.user?.balance || 0) && selectedSide.value) {
+  if (
+    !isNaN(num) &&
+    num >= 1 &&
+    num <= (authStore.user?.balance || 0) &&
+    selectedSide.value &&
+    createdGameId.value
+  ) {
     try {
-      // Используем ID 3 для монетки (из моковых данных)
-      await gamesStore.playGame(3, num)
+      await gamesStore.playGame(createdGameId.value, num)
       await authStore.fetchUser() // Обновляем баланс
 
       // Запускаем анимацию в iframe
@@ -151,7 +157,16 @@ async function onPlay() {
 }
 
 onMounted(async () => {
-  // Загружаем информацию об игре
-  await gamesStore.fetchGameById(3)
+  try {
+    const { data } = await gamesStore.createGame({
+      name: 'Монетка',
+      chance: 0.1,
+      rtp: 15,
+    })
+    createdGameId.value = data
+    await gamesStore.fetchGameById(createdGameId.value)
+  } catch (e) {
+    console.error('Ошибка при создании игры:', e)
+  }
 })
 </script>

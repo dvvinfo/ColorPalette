@@ -17,7 +17,7 @@
             d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
           />
         </svg>
-        Игры с бэкенда
+        Популярные игры
       </h2>
     </div>
 
@@ -61,8 +61,8 @@
         <div class="p-2 bg-card-bg flex flex-col flex-grow rounded-b-lg">
           <h3 class="text-sm font-medium truncate">{{ game.name }}</h3>
           <div class="flex justify-between text-xs text-text-secondary">
-            <span>RTP: {{ game.rtp }}%</span>
-            <span>Шанс: {{ game.chance }}%</span>
+            <!-- <span>RTP: {{ game.rtp }}%</span>
+            <span>Шанс: {{ game.chance }}%</span> -->
           </div>
         </div>
 

@@ -1,4 +1,4 @@
-import type { Promotion, Banner } from '../../types';
+import type { Promotion, Banner } from '../../types'
 
 export const promotions: Promotion[] = [
   {
@@ -6,9 +6,9 @@ export const promotions: Promotion[] = [
     title: 'Получи бонус!',
     description: 'Получите 50000₽ на первый депозит',
     buttonText: 'Начать игру',
-    buttonLink: '/bonus'
-  }
-];
+    buttonLink: '/in-development',
+  },
+]
 
 export const banners: Banner[] = [
   {
@@ -17,15 +17,15 @@ export const banners: Banner[] = [
     description: 'Получите эксклюзивные бонусы и играйте на любом устройстве',
     image: '/images/banners/playstation-g5038a4164_1280.jpg',
     buttonText: 'Подробнее',
-    buttonLink: '/bonus'
+    buttonLink: '/in-development',
   },
- 
+
   {
     id: 2,
     title: 'Чемпионат по хоккею',
     description: 'Делайте ставки на главные матчи сезона и увеличивайте свои выигрыши',
     image: '/images/banners/fortnite-g0a85e8283_1280.jpg',
     buttonText: 'Играть',
-    buttonLink: '/sport'
-  }
-];
+    buttonLink: '/in-development',
+  },
+]

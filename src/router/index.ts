@@ -47,6 +47,11 @@ const router = createRouter({
       name: 'SocialAuthTest',
       component: () => import('@/components/SocialAuthTest.vue'),
     },
+    {
+      path: '/in-development',
+      name: 'in-development',
+      component: () => import('@/views/InDevelopment.vue'),
+    },
   ],
 })
 

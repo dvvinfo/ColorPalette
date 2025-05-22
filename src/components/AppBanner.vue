@@ -24,11 +24,12 @@
             <div class="relative z-10 p-6 md:p-10 max-w-md">
               <h2 class="text-2xl md:text-4xl font-bold mb-3 text-white">{{ banner.title }}</h2>
               <p class="text-white/80 mb-5">{{ banner.description }}</p>
-              <button
+              <router-link
+                :to="banner.buttonLink"
                 class="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/80 transition-all"
               >
                 {{ banner.buttonText }}
-              </button>
+              </router-link>
             </div>
           </div>
         </swiper-slide>

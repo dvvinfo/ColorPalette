@@ -81,13 +81,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import BackButton from '@/components/BackButton.vue'
 import BaseInput from '@/components/BaseInput.vue'
 import BaseButton from '@/components/BaseButton.vue'
 import { useGamesStore } from '@/stores/games'
 import { useAuthStore } from '@/stores/auth'
+import { games as mockGames } from '@/assets/mock/games'
 
 const route = useRoute()
 const gamesStore = useGamesStore()
@@ -97,6 +98,36 @@ const presets = [50, 100, 500, 1000]
 
 const game = computed(() => gamesStore.currentGame)
 const lastResult = computed(() => gamesStore.lastPlayResult)
+
+const createdGameId = ref<number | null>(null)
+
+async function createAndFetchGame() {
+  const gameId = Number(route.params.id)
+  const mockGame = mockGames.find((g) => g.id === gameId)
+  const name = mockGame ? mockGame.title : `game_${gameId}`
+  try {
+    const { data } = await gamesStore.createGame({
+      name,
+      chance: 0.1,
+      rtp: 15,
+    })
+    createdGameId.value = data
+    await gamesStore.fetchGameById(createdGameId.value)
+  } catch (e) {
+    console.error('Ошибка при создании игры:', e)
+  }
+}
+
+onMounted(() => {
+  createAndFetchGame()
+})
+
+watch(
+  () => route.params.id,
+  () => {
+    createAndFetchGame()
+  },
+)
 
 const isValid = computed(() => {
   const num = Number(bet.value)
@@ -110,14 +141,11 @@ function onBetInput(e: Event) {
 
 async function onPlay() {
   const num = Number(bet.value)
-  if (!game.value) {
-    await gamesStore.fetchGameById(Number(route.params.id))
-  }
-  if (!isNaN(num) && num >= 1 && num <= (authStore.user?.balance || 0)) {
+  if (!isNaN(num) && num >= 1 && num <= (authStore.user?.balance || 0) && createdGameId.value) {
     try {
-      await gamesStore.playGame(Number(route.params.id), num)
-      await authStore.fetchUser() // Обновляем баланс
-      bet.value = '' // Очищаем поле ставки
+      await gamesStore.playGame(createdGameId.value, num)
+      await authStore.fetchUser()
+      bet.value = ''
     } catch (error) {
       console.error('Ошибка при игре:', error)
     }

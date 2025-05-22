@@ -8,7 +8,7 @@
         <div class="w-full p-6 absolute top-0 left-0">
           <h2 class="text-2xl font-bold mb-2">Стань чемпионом</h2>
           <p class="text-white/80 mb-4">поддержка чемпионатов</p>
-          <BaseButton variant="primary">Играть</BaseButton>
+          <router-link to="/in-development" class="btn-primary">Промоакция</router-link>
         </div>
         <div class="w-full flex justify-center">
           <img

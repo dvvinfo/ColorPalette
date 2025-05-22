@@ -5,7 +5,7 @@
     >
       <!-- Логотип -->
       <div class="text-primary font-bold text-3xl">
-        <span class="text-primary">Казино</span>
+        <router-link to="/" class="hover:text-primary">Казино</router-link>
       </div>
 
       <!-- Профиль пользователя или кнопки авторизации -->

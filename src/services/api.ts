@@ -99,7 +99,7 @@ export const userApi = {
 }
 
 export const balanceApi = {
-  getBalance: () => api.get<{ balance: number }>('/balance'),
+  getBalance: () => api.get<{ balance: number }>('/balance/'),
 
   deposit: (data: { amount: number; method: string }) =>
     api.post<StatusResponse>('/balance/deposit', data),
@@ -113,7 +113,7 @@ export const gamesApi = {
 
   getById: (id: number) => api.get<Game>(`/game/${id}`),
 
-  create: (data: { name: string; chance: number; rtp: number }) => api.post<number>('/game', data),
+  create: (data: { name: string; chance: number; rtp: number }) => api.post<number>('/game/', data),
 
   update: (id: number, data: Partial<Game>) => api.put<StatusResponse>(`/game/${id}`, data),
 
