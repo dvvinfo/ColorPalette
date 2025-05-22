@@ -72,7 +72,7 @@ export interface StatusResponse {
 // API методы
 export const authApi = {
   register: (data: { username: string; email: string; password: string }) =>
-    api.post<AuthResponse>('/auth/register', data),
+    api.post<AuthResponse>('/auth/registration', data),
 
   login: (data: { username: string; password: string }) =>
     api.post<AuthResponse>('/auth/login', data),
@@ -109,7 +109,7 @@ export const balanceApi = {
 }
 
 export const gamesApi = {
-  getAll: () => api.get<Game[]>('/game'),
+  getAll: () => api.get<Game[]>('/game/'),
 
   getById: (id: number) => api.get<Game>(`/game/${id}`),
 

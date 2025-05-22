@@ -81,7 +81,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import BackButton from '@/components/BackButton.vue'
 import BaseInput from '@/components/BaseInput.vue'
@@ -110,6 +110,9 @@ function onBetInput(e: Event) {
 
 async function onPlay() {
   const num = Number(bet.value)
+  if (!game.value) {
+    await gamesStore.fetchGameById(Number(route.params.id))
+  }
   if (!isNaN(num) && num >= 1 && num <= (authStore.user?.balance || 0)) {
     try {
       await gamesStore.playGame(Number(route.params.id), num)
@@ -120,11 +123,4 @@ async function onPlay() {
     }
   }
 }
-
-onMounted(async () => {
-  const gameId = Number(route.params.id)
-  if (gameId) {
-    await gamesStore.fetchGameById(gameId)
-  }
-})
 </script>

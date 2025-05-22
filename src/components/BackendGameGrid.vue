@@ -37,7 +37,7 @@
     </div>
 
     <!-- Empty State -->
-    <div v-else-if="gamesStore.games.length === 0" class="text-center py-8">
+    <div v-else-if="!gamesStore.games || gamesStore.games.length === 0" class="text-center py-8">
       <p class="text-white/60">Игры не найдены</p>
     </div>
 

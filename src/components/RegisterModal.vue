@@ -113,8 +113,8 @@ async function onSubmit(values: Record<string, unknown>) {
     loading.value = true
     error.value = null
     const success = await authStore.register(
-      values.email as string,
       values.username as string,
+      values.email as string,
       values.password as string,
     )
     if (success) {
