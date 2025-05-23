@@ -3,21 +3,24 @@
     <div class="bg-card-bg rounded-lg p-6">
       <div class="flex items-center gap-4 mb-6">
         <BackButton />
-        <h1 class="text-2xl font-bold">Кости</h1>
+        <h1 class="text-2xl font-bold">Dice Game</h1>
       </div>
 
-      <!-- Игровое поле -->
+      <!-- Игровое поле через iframe -->
       <div class="aspect-video bg-black/20 rounded-lg flex items-center justify-center mb-6">
         <iframe
-          ref="gameFrame"
-          src="https://elfaz19.github.io/dice-game-/"
-          class="w-full h-full rounded-lg"
+          ref="diceIframe"
+          :src="gameUrl"
+          width="100%"
+          height="100%"
           frameborder="0"
+          allow="autoplay"
+          sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
         ></iframe>
       </div>
 
-      <!-- Форма ставки -->
-      <form @submit.prevent="onPlay" class="max-w-md mx-auto">
+      <!-- Форма ставки (только для авторизованных пользователей) -->
+      <form v-if="authStore.isAuthenticated" @submit.prevent="onPlay" class="max-w-md mx-auto">
         <div class="flex flex-col gap-4">
           <div class="relative">
             <BaseInput
@@ -47,7 +50,7 @@
           <BaseButton
             type="submit"
             variant="primary"
-            class="bg-red-600 hover:bg-red-700 text-white text-lg font-bold py-3 rounded-lg"
+            class="text-white text-lg font-bold py-3 rounded-lg"
             :disabled="!isValid || gamesStore.loading"
           >
             {{ gamesStore.loading ? 'Загрузка...' : 'Играть' }}
@@ -59,24 +62,44 @@
 
           <div v-if="lastResult" class="text-center">
             <div class="text-2xl mb-2">
-              {{ lastResult.result === 'win' ? '🎉' : '😢' }}
+              {{
+                (lastResult.result as string) === 'win'
+                  ? '🎉'
+                  : (lastResult.result as string) === 'draw'
+                    ? '🤝'
+                    : '😢'
+              }}
             </div>
             <div class="text-xl">
               {{
-                lastResult.result === 'win'
+                (lastResult.result as string) === 'win'
                   ? `Выигрыш: ${lastResult.win_amount} ₽`
-                  : 'Попробуйте еще раз!'
+                  : (lastResult.result as string) === 'draw'
+                    ? 'Ничья!'
+                    : 'Попробуйте еще раз!'
               }}
             </div>
           </div>
         </div>
       </form>
+
+      <!-- Сообщение для неавторизованных пользователей -->
+      <div
+        v-else
+        class="max-w-md mx-auto text-center p-6 rounded-lg shadow"
+        style="background: var(--card-bg)"
+      >
+        <h3 class="text-xl font-bold mb-2" style="color: var(--primary)">Демо-режим</h3>
+        <p class="mb-0 text-lg" style="color: var(--text-primary)">
+          Чтобы играть, нужно авторизоваться или зарегистрироваться
+        </p>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import BackButton from '@/components/BackButton.vue'
 import BaseInput from '@/components/BaseInput.vue'
 import BaseButton from '@/components/BaseButton.vue'
@@ -87,8 +110,61 @@ const gamesStore = useGamesStore()
 const authStore = useAuthStore()
 const bet = ref<string | number>('')
 const presets = [50, 100, 500, 1000]
-const gameFrame = ref<HTMLIFrameElement | null>(null)
+const diceIframe = ref<HTMLIFrameElement | null>(null)
 const createdGameId = ref<number | null>(null)
+
+const gameUrl = computed(() => `${window.location.origin}/games/dice-game--main/index.html`)
+
+// Инициализация игры
+async function initializeGame() {
+  gamesStore.lastPlayResult = null // Сбросить результат при входе в игру
+  try {
+    // Создаём новую игру
+    const { data } = await gamesStore.createGame({
+      name: 'Кости',
+      chance: 0.1,
+      rtp: 15,
+    })
+    createdGameId.value = data
+    await gamesStore.fetchGameById(data)
+  } catch (e) {
+    console.error('Ошибка при инициализации игры:', e)
+  }
+}
+
+async function onPlay() {
+  const num = Number(bet.value)
+  if (!isNaN(num) && num >= 1 && num <= (authStore.user?.balance || 0) && createdGameId.value) {
+    try {
+      // Сначала делаем ставку
+      await gamesStore.playGame(createdGameId.value, num)
+      await authStore.fetchUser() // Обновляем баланс
+      // Отправляем сообщение в iframe для запуска игры
+      if (diceIframe.value && diceIframe.value.contentWindow) {
+        diceIframe.value.contentWindow.postMessage({ type: 'PLAY_DICE', bet: num }, '*')
+      }
+      bet.value = ''
+    } catch (error) {
+      console.error('Ошибка при игре:', error)
+    }
+  }
+}
+
+onMounted(async () => {
+  window.addEventListener('message', handleDiceResult)
+  await initializeGame()
+})
+
+onUnmounted(() => {
+  window.removeEventListener('message', handleDiceResult)
+})
+
+function handleDiceResult(event: MessageEvent) {
+  if (event.data && event.data.type === 'DICE_RESULT') {
+    // Обновляем баланс пользователя
+    authStore.fetchUser()
+  }
+}
 
 const lastResult = computed(() => gamesStore.lastPlayResult)
 
@@ -101,37 +177,8 @@ function onBetInput(e: Event) {
   const val = (e.target as HTMLInputElement).value
   bet.value = val.replace(/[^0-9]/g, '')
 }
-
-async function onPlay() {
-  const num = Number(bet.value)
-  if (!isNaN(num) && num >= 1 && num <= (authStore.user?.balance || 0) && createdGameId.value) {
-    try {
-      await gamesStore.playGame(createdGameId.value, num)
-      await authStore.fetchUser() // Обновляем баланс
-
-      // Запускаем анимацию в iframe
-      if (gameFrame.value?.contentWindow) {
-        gameFrame.value.contentWindow.postMessage({ type: 'ROLL_DICE' }, '*')
-      }
-
-      bet.value = '' // Очищаем поле ставки
-    } catch (error) {
-      console.error('Ошибка при игре:', error)
-    }
-  }
-}
-
-onMounted(async () => {
-  try {
-    const { data } = await gamesStore.createGame({
-      name: 'Кости',
-      chance: 0.1,
-      rtp: 15,
-    })
-    createdGameId.value = data
-    await gamesStore.fetchGameById(createdGameId.value)
-  } catch (e) {
-    console.error('Ошибка при создании игры:', e)
-  }
-})
 </script>
+
+<style>
+/* Можно добавить стили для компонента */
+</style>

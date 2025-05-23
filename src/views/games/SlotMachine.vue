@@ -9,10 +9,13 @@
       <!-- Игровое поле -->
       <div class="aspect-video bg-black/20 rounded-lg flex items-center justify-center mb-6">
         <iframe
-          ref="gameFrame"
-          src="https://johakr.github.io/html5-slot-machine/"
+          ref="slotIframe"
+          :src="gameUrl"
           class="w-full h-full rounded-lg"
           frameborder="0"
+          allow="autoplay"
+          sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+          @load="onIframeLoad"
         ></iframe>
       </div>
 
@@ -48,7 +51,7 @@
             type="submit"
             variant="primary"
             class="bg-red-600 hover:bg-red-700 text-white text-lg font-bold py-3 rounded-lg"
-            :disabled="!isValid || gamesStore.loading"
+            :disabled="!isValid || gamesStore.loading || !isSlotReady"
           >
             {{ gamesStore.loading ? 'Загрузка...' : 'Играть' }}
           </BaseButton>
@@ -76,45 +79,59 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import BackButton from '@/components/BackButton.vue'
 import BaseInput from '@/components/BaseInput.vue'
 import BaseButton from '@/components/BaseButton.vue'
 import { useGamesStore } from '@/stores/games'
 import { useAuthStore } from '@/stores/auth'
 
+console.log('Компонент SlotMachine загружен')
+
 const gamesStore = useGamesStore()
 const authStore = useAuthStore()
 const bet = ref<string | number>('')
 const presets = [50, 100, 500, 1000]
-const gameFrame = ref<HTMLIFrameElement | null>(null)
+const slotIframe = ref<HTMLIFrameElement | null>(null)
 const createdGameId = ref<number | null>(null)
+const isSlotReady = ref(false)
 
-const lastResult = computed(() => gamesStore.lastPlayResult)
+const gameUrl = computed(() => `${window.location.origin}/games/slot-machine/index.html`)
 
-const isValid = computed(() => {
-  const num = Number(bet.value)
-  return !isNaN(num) && num >= 1 && num <= (authStore.user?.balance || 0)
-})
-
-function onBetInput(e: Event) {
-  const val = (e.target as HTMLInputElement).value
-  bet.value = val.replace(/[^0-9]/g, '')
+// Инициализация игры
+async function initializeGame() {
+  gamesStore.lastPlayResult = null // Сбросить результат при входе в игру
+  try {
+    // Создаём новую игру
+    const { data } = await gamesStore.createGame({
+      name: 'Слоты',
+      chance: 0.1,
+      rtp: 15,
+    })
+    createdGameId.value = data
+    await gamesStore.fetchGameById(data)
+  } catch (e) {
+    console.error('Ошибка при инициализации игры:', e)
+  }
 }
 
 async function onPlay() {
   const num = Number(bet.value)
-  if (!isNaN(num) && num >= 1 && num <= (authStore.user?.balance || 0) && createdGameId.value) {
+  if (
+    !isNaN(num) &&
+    num >= 1 &&
+    num <= (authStore.user?.balance || 0) &&
+    createdGameId.value &&
+    isSlotReady.value
+  ) {
     try {
+      // Сначала делаем ставку
       await gamesStore.playGame(createdGameId.value, num)
-      await authStore.fetchUser() // Обновляем баланс
-
-      // Запускаем анимацию в iframe
-      if (gameFrame.value?.contentWindow) {
-        gameFrame.value.contentWindow.postMessage({ type: 'SPIN_SLOTS' }, '*')
+      // Отправляем сообщение в iframe для запуска вращения
+      if (slotIframe.value && slotIframe.value.contentWindow) {
+        slotIframe.value.contentWindow.postMessage({ type: 'SPIN_SLOTS', bet: num }, '*')
       }
-
-      bet.value = '' // Очищаем поле ставки
+      bet.value = ''
     } catch (error) {
       console.error('Ошибка при игре:', error)
     }
@@ -122,16 +139,52 @@ async function onPlay() {
 }
 
 onMounted(async () => {
-  try {
-    const { data } = await gamesStore.createGame({
-      name: 'Слоты',
-      chance: 0.1,
-      rtp: 15,
-    })
-    createdGameId.value = data
-    await gamesStore.fetchGameById(createdGameId.value)
-  } catch (e) {
-    console.error('Ошибка при создании игры:', e)
-  }
+  window.addEventListener('message', handleSlotMessage)
+  await initializeGame()
 })
+
+onUnmounted(() => {
+  window.removeEventListener('message', handleSlotMessage)
+})
+
+function handleSlotMessage(event: MessageEvent) {
+  console.log('Получено сообщение от слота:', event.data)
+  if (event.data && event.data.type === 'SLOT_READY') {
+    isSlotReady.value = true
+    console.log('Слот готов к игре')
+  } else if (event.data && event.data.type === 'SLOT_RESULT') {
+    const { result, winAmount } = event.data
+    if (createdGameId.value) {
+      // Добавляем задержку для анимации слотов
+      setTimeout(() => {
+        gamesStore.updateGameResult({
+          gameId: createdGameId.value as number,
+          result: result === 'win' ? 'win' : 'lose',
+          win_amount: winAmount || 0,
+        })
+        authStore.fetchUser()
+      }, 2000)
+    }
+  }
+}
+
+const lastResult = computed(() => gamesStore.lastPlayResult)
+
+const isValid = computed(() => {
+  const num = Number(bet.value)
+  return !isNaN(num) && num >= 1 && num <= (authStore.user?.balance || 0) && isSlotReady.value
+})
+
+function onBetInput(e: Event) {
+  const val = (e.target as HTMLInputElement).value
+  bet.value = val.replace(/[^0-9]/g, '')
+}
+
+function onIframeLoad() {
+  console.log('Iframe загружен')
+  // Отправляем сообщение в iframe для инициализации
+  if (slotIframe.value && slotIframe.value.contentWindow) {
+    slotIframe.value.contentWindow.postMessage({ type: 'INIT_SLOT' }, '*')
+  }
+}
 </script>

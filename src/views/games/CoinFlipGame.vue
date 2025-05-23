@@ -16,8 +16,8 @@
         ></iframe>
       </div>
 
-      <!-- Форма ставки -->
-      <form @submit.prevent="onPlay" class="max-w-md mx-auto">
+      <!-- Форма ставки (только для авторизованных пользователей) -->
+      <form v-if="authStore.isAuthenticated" @submit.prevent="onPlay" class="max-w-md mx-auto">
         <div class="flex flex-col gap-4">
           <div class="relative">
             <BaseInput
@@ -68,7 +68,7 @@
           <BaseButton
             type="submit"
             variant="primary"
-            class="bg-red-600 hover:bg-red-700 text-white text-lg font-bold py-3 rounded-lg"
+            class="text-white text-lg font-bold py-3 rounded-lg"
             :disabled="!isValid || gamesStore.loading || !selectedSide"
           >
             {{ gamesStore.loading ? 'Загрузка...' : 'Играть' }}
@@ -92,6 +92,18 @@
           </div>
         </div>
       </form>
+
+      <!-- Сообщение для неавторизованных пользователей -->
+      <div
+        v-else
+        class="max-w-md mx-auto text-center p-6 rounded-lg shadow"
+        style="background: var(--card-bg)"
+      >
+        <h3 class="text-xl font-bold mb-2" style="color: var(--primary)">Демо-режим</h3>
+        <p class="mb-0 text-lg" style="color: var(--text-primary)">
+          Чтобы играть, нужно авторизоваться или зарегистрироваться
+        </p>
+      </div>
     </div>
   </div>
 </template>
@@ -156,15 +168,26 @@ async function onPlay() {
   }
 }
 
-onMounted(async () => {
+// Инициализация игры
+async function initializeGame() {
+  gamesStore.lastPlayResult = null // Сбросить результат при входе в игру
   try {
+    // Создаём новую игру
     const { data } = await gamesStore.createGame({
-      name: 'Монетка',
+      name: 'Орёл и Решка',
       chance: 0.1,
       rtp: 15,
     })
     createdGameId.value = data
-    await gamesStore.fetchGameById(createdGameId.value)
+    await gamesStore.fetchGameById(data)
+  } catch (e) {
+    console.error('Ошибка при инициализации игры:', e)
+  }
+}
+
+onMounted(async () => {
+  try {
+    await initializeGame()
   } catch (e) {
     console.error('Ошибка при создании игры:', e)
   }

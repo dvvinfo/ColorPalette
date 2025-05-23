@@ -1,15 +1,15 @@
 import type { Game, Category } from '../../types'
 
 export const games: Game[] = [
-  {
-    id: 1,
-    title: 'Слоты',
-    category: 'slots',
-    image: '/images/games/1.png',
-    provider: 'Казино',
-    isHot: true,
-    link: '/games/slots',
-  },
+  // {
+  //   id: 1,
+  //   title: 'Слоты',
+  //   category: 'slots',
+  //   image: '/images/games/1.png',
+  //   provider: 'Казино',
+  //   isHot: true,
+  //   link: '/games/slots',
+  // },
   {
     id: 2,
     title: 'Рулетка',
@@ -28,15 +28,15 @@ export const games: Game[] = [
     isHot: true,
     link: '/games/blackjack',
   },
-  {
-    id: 4,
-    title: 'Колесо Фортуны',
-    category: 'wheel',
-    image: '/images/games/4.png',
-    provider: 'Казино',
-    isHot: true,
-    link: '/games/wheel',
-  },
+  // {
+  //   id: 4,
+  //   title: 'Колесо Фортуны',
+  //   category: 'wheel',
+  //   image: '/images/games/4.png',
+  //   provider: 'Казино',
+  //   isHot: true,
+  //   link: '/games/wheel',
+  // },
   {
     id: 5,
     title: 'Кости',

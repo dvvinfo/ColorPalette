@@ -19,8 +19,8 @@ export const useGamesStore = defineStore('games', () => {
       games.value = data
       error.value = null
     } catch (err) {
-      error.value = 'Не удалось загрузить игры'
-      console.error('Error fetching games:', err)
+      error.value = 'Не удалось загрузить список игр'
+      console.error('Ошибка при загрузке игр:', err)
     } finally {
       loading.value = false
     }
@@ -34,7 +34,7 @@ export const useGamesStore = defineStore('games', () => {
       error.value = null
     } catch (err) {
       error.value = 'Не удалось загрузить игру'
-      console.error('Error fetching game:', err)
+      console.error('Ошибка при загрузке игры:', err)
     } finally {
       loading.value = false
     }
@@ -50,8 +50,8 @@ export const useGamesStore = defineStore('games', () => {
       error.value = null
       return data
     } catch (err) {
-      error.value = 'Ошибка при игре'
-      console.error('Error playing game:', err)
+      error.value = 'Произошла ошибка при игре'
+      console.error('Ошибка при игре:', err)
       throw err
     } finally {
       loading.value = false
@@ -60,6 +60,14 @@ export const useGamesStore = defineStore('games', () => {
 
   async function createGame(data: { name: string; chance: number; rtp: number }) {
     return await gamesApi.create(data)
+  }
+
+  function updateGameResult(data: { gameId: number; result: 'win' | 'lose'; win_amount: number }) {
+    lastPlayResult.value = {
+      result: data.result,
+      win_amount: data.win_amount,
+      new_balance: 0, // This will be updated by the auth store
+    }
   }
 
   return {
@@ -72,5 +80,6 @@ export const useGamesStore = defineStore('games', () => {
     fetchGameById,
     playGame,
     createGame,
+    updateGameResult,
   }
 })
