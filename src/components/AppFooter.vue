@@ -24,23 +24,21 @@
         </div>
 
         <div class="footer-section">
-          <h3 class="text-primary font-bold mb-2">Бонусы</h3>
+          <h3 class="text-primary font-bold mb-2">
+            <router-link to="/bonuses" class="hover:text-primary">Бонусы</router-link>
+          </h3>
           <ul class="text-sm space-y-1">
             <li>
-              <router-link to="/in-development" class="hover:text-primary"
-                >Приветственный</router-link
-              >
+              <router-link to="/bonuses" class="hover:text-primary">Приветственный</router-link>
             </li>
             <li>
-              <router-link to="/in-development" class="hover:text-primary">Кэшбэк</router-link>
+              <router-link to="/bonuses" class="hover:text-primary">Кэшбэк</router-link>
             </li>
             <li>
-              <router-link to="/in-development" class="hover:text-primary">Промокоды</router-link>
+              <router-link to="/bonuses" class="hover:text-primary">Промокоды</router-link>
             </li>
             <li>
-              <router-link to="/in-development" class="hover:text-primary"
-                >VIP программа</router-link
-              >
+              <router-link to="/bonuses" class="hover:text-primary">VIP программа</router-link>
             </li>
           </ul>
         </div>
@@ -49,14 +47,14 @@
           <h3 class="text-primary font-bold mb-2">Информация</h3>
           <ul class="text-sm space-y-1">
             <li>
-              <router-link to="/in-development" class="hover:text-primary">О нас</router-link>
+              <router-link to="/about" class="hover:text-primary">О нас</router-link>
             </li>
             <li>
-              <router-link to="/in-development" class="hover:text-primary">Правила</router-link>
+              <router-link to="/terms" class="hover:text-primary">Правила и условия</router-link>
             </li>
             <li>
-              <router-link to="/in-development" class="hover:text-primary"
-                >Ответственная игра</router-link
+              <router-link to="/betting-rules" class="hover:text-primary"
+                >Правила ставок</router-link
               >
             </li>
             <li>
@@ -70,7 +68,7 @@
         <div class="footer-section">
           <h3 class="text-primary font-bold mb-2">Поддержка</h3>
           <ul class="text-sm space-y-1">
-            <li><router-link to="/in-development" class="hover:text-primary">FAQ</router-link></li>
+            <li><router-link to="/faq" class="hover:text-primary">FAQ</router-link></li>
             <li>
               <router-link to="/in-development" class="hover:text-primary"
                 >Связаться с нами</router-link

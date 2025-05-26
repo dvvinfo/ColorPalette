@@ -1,23 +1,18 @@
 <template>
   <div class="min-h-screen bg-background w-full">
-    <Banner />
+    <!-- Новостной баннер -->
+    <NewsBanner />
 
     <div class="flex flex-col md:flex-row gap-6 mt-8">
       <div class="w-full md:w-3/4">
         <!-- Game Categories -->
-        <GameGrid class="mb-8" />
+        <GameGrid  class="mb-8" />
         <!-- <BackendGameGrid /> -->
         <!-- Новый слот на Vue -->
         <!-- <SlotMachinePure class="mb-8" /> -->
       </div>
 
-      <div class="w-full md:w-1/4">
-        <!-- Jackpot Counter -->
-        <JackpotCounter class="mb-8" />
-        <BonusCard title="Бонус" amount="1000" :time="10000" class="mb-8" />
-        <!-- Promotions Side Panel -->
-        <PromotionPanel />
-      </div>
+      <RightSidebar />
     </div>
 
     <!-- Theme Switcher (floating) -->
@@ -30,14 +25,12 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import Banner from '../components/AppBanner.vue'
+import NewsBanner from '../components/NewsBanner.vue'
 import GameGrid from '../components/GameGrid.vue'
-import PromotionPanel from '../components/PromotionPanel.vue'
-import JackpotCounter from '../components/JackpotCounter.vue'
 import ThemeSwitcher from '../components/ThemeSwitcher.vue'
 import AuthModal from '../components/AuthModal.vue'
 import RegisterModal from '../components/RegisterModal.vue'
-import BonusCard from '../components/BonusCard.vue'
+import RightSidebar from '../components/RightSidebar.vue'
 // import BackendGameGrid from '../components/BackendGameGrid.vue'
 // import SlotMachinePure from './games/slot-vue/SlotMachinePure.vue'
 const showAuth = ref(false)

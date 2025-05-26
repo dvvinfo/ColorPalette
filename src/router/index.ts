@@ -52,6 +52,41 @@ const router = createRouter({
       name: 'in-development',
       component: () => import('@/views/InDevelopment.vue'),
     },
+    {
+      path: '/news',
+      name: 'news',
+      component: () => import('@/views/news/NewsView.vue'),
+    },
+    {
+      path: '/news/:id',
+      name: 'news-detail',
+      component: () => import('@/views/news/[id].vue'),
+    },
+    {
+      path: '/bonuses',
+      name: 'bonuses',
+      component: () => import('@/views/BonusesView.vue'),
+    },
+    {
+      path: '/faq',
+      name: 'faq',
+      component: () => import('@/views/FAQ.vue'),
+    },
+    {
+      path: '/about',
+      name: 'about',
+      component: () => import('@/views/AboutView.vue'),
+    },
+    {
+      path: '/terms',
+      name: 'terms',
+      component: () => import('@/views/TermsView.vue'),
+    },
+    {
+      path: '/betting-rules',
+      name: 'betting-rules',
+      component: () => import('@/views/BettingRules.vue'),
+    },
   ],
 })
 

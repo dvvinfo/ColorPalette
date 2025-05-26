@@ -1,5 +1,5 @@
 <template>
-  <div class="relative">
+  <div class="relative" >
     <!-- Champion Banner -->
     <div class="mb-6 rounded-lg overflow-hidden">
       <div
@@ -21,7 +21,7 @@
     </div>
 
     <!-- Game Categories Tabs -->
-    <div class="flex items-center justify-between mb-4">
+    <div class="flex items-center justify-between mb-4" id="game">
       <h2 class="text-xl font-bold flex items-center gap-2">
         <svg
           xmlns="http://www.w3.org/2000/svg"
