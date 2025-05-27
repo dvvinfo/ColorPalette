@@ -121,14 +121,14 @@ const gameUrl = computed(
 async function initializeGame() {
   gamesStore.lastPlayResult = null // Сбросить результат при входе в игру
   try {
-    // Создаём новую игру
-    const { data } = await gamesStore.createGame({
-      name: 'Колесо Фортуны',
-      chance: 0.1,
-      rtp: 15,
-    })
-    createdGameId.value = data
-    await gamesStore.fetchGameById(data)
+    // Используем фиксированный ID для колеса фортуны
+    const gameId = gamesStore.getGameIdByRoute('wheel')
+    if (gameId) {
+      createdGameId.value = gameId
+      await gamesStore.fetchGameById(gameId)
+    } else {
+      console.error('Не найден ID игры для колеса фортуны')
+    }
   } catch (e) {
     console.error('Ошибка при инициализации игры:', e)
   }

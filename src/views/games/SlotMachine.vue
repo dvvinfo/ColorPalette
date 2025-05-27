@@ -102,14 +102,14 @@ const gameUrl = computed(() => `${window.location.origin}/games/slot-machine/ind
 async function initializeGame() {
   gamesStore.lastPlayResult = null // Сбросить результат при входе в игру
   try {
-    // Создаём новую игру
-    const { data } = await gamesStore.createGame({
-      name: 'Слоты',
-      chance: 0.1,
-      rtp: 15,
-    })
-    createdGameId.value = data
-    await gamesStore.fetchGameById(data)
+    // Используем фиксированный ID для слот машины
+    const gameId = gamesStore.getGameIdByRoute('slot-machine')
+    if (gameId) {
+      createdGameId.value = gameId
+      await gamesStore.fetchGameById(gameId)
+    } else {
+      console.error('Не найден ID игры для слот машины')
+    }
   } catch (e) {
     console.error('Ошибка при инициализации игры:', e)
   }

@@ -119,14 +119,14 @@ const gameUrl = computed(() => `${window.location.origin}/games/Black-Jack-Game-
 async function initializeGame() {
   gamesStore.lastPlayResult = null // Сбросить результат при входе в игру
   try {
-    // Создаём новую игру
-    const { data } = await gamesStore.createGame({
-      name: 'Блэкджек',
-      chance: 0.1,
-      rtp: 15,
-    })
-    createdGameId.value = data
-    await gamesStore.fetchGameById(data)
+    // Используем фиксированный ID для блэкджека
+    const gameId = gamesStore.getGameIdByRoute('blackjack')
+    if (gameId) {
+      createdGameId.value = gameId
+      await gamesStore.fetchGameById(gameId)
+    } else {
+      console.error('Не найден ID игры для блэкджека')
+    }
   } catch (e) {
     console.error('Ошибка при инициализации игры:', e)
   }

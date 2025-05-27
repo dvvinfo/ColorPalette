@@ -88,7 +88,6 @@ import BaseInput from '@/components/BaseInput.vue'
 import BaseButton from '@/components/BaseButton.vue'
 import { useGamesStore } from '@/stores/games'
 import { useAuthStore } from '@/stores/auth'
-import { games as mockGames } from '@/assets/mock/games'
 
 const route = useRoute()
 const gamesStore = useGamesStore()
@@ -103,18 +102,12 @@ const createdGameId = ref<number | null>(null)
 
 async function createAndFetchGame() {
   const gameId = Number(route.params.id)
-  const mockGame = mockGames.find((g) => g.id === gameId)
-  const name = mockGame ? mockGame.title : `game_${gameId}`
   try {
-    const { data } = await gamesStore.createGame({
-      name,
-      chance: 0.1,
-      rtp: 15,
-    })
-    createdGameId.value = data
-    await gamesStore.fetchGameById(createdGameId.value)
+    // Используем переданный ID напрямую, не создаем новую игру
+    createdGameId.value = gameId
+    await gamesStore.fetchGameById(gameId)
   } catch (e) {
-    console.error('Ошибка при создании игры:', e)
+    console.error('Ошибка при загрузке игры:', e)
   }
 }
 

@@ -91,7 +91,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import BackButton from '@/components/BackButton.vue'
 import BaseInput from '@/components/BaseInput.vue'
 import BaseButton from '@/components/BaseButton.vue'
@@ -111,18 +111,9 @@ const gameUrl = computed(
 
 // Инициализация игры
 async function initializeGame() {
-  gamesStore.lastPlayResult = null // Сбросить результат при входе в игру
-  try {
-    // Создаём новую игру
-    const { data } = await gamesStore.createGame({
-      name: 'Рулетка',
-      chance: 0.1,
-      rtp: 15,
-    })
-    createdGameId.value = data
-    await gamesStore.fetchGameById(data)
-  } catch (e) {
-    console.error('Ошибка при инициализации игры:', e)
+  const gameId = await gamesStore.initializeGameForRoute('roulette', authStore)
+  if (gameId) {
+    createdGameId.value = gameId
   }
 }
 
@@ -147,6 +138,19 @@ onMounted(async () => {
   window.addEventListener('message', handleRouletteResult)
   await initializeGame()
 })
+
+// Наблюдаем за состоянием авторизации
+watch(
+  () => authStore.isAuthenticated,
+  async (isAuth: boolean) => {
+    if (isAuth) {
+      await initializeGame()
+    } else {
+      createdGameId.value = null
+      gamesStore.lastPlayResult = null
+    }
+  },
+)
 
 onUnmounted(() => {
   window.removeEventListener('message', handleRouletteResult)

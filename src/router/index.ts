@@ -38,6 +38,21 @@ const router = createRouter({
       component: () => import('@/views/games/DiceGame.vue'),
     },
     {
+      path: '/games/crash',
+      name: 'crash',
+      component: () => import('@/views/games/CrashGame.vue'),
+    },
+    {
+      path: '/games/coin-flip',
+      name: 'coin-flip',
+      component: () => import('@/views/games/CoinFlipGame.vue'),
+    },
+    {
+      path: '/games/slot-machine',
+      name: 'slot-machine',
+      component: () => import('@/views/games/SlotMachine.vue'),
+    },
+    {
       path: '/profile',
       name: 'profile',
       component: () => import('@/views/UserProfile.vue'),

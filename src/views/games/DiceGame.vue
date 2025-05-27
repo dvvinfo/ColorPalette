@@ -119,14 +119,14 @@ const gameUrl = computed(() => `${window.location.origin}/games/dice-game--main/
 async function initializeGame() {
   gamesStore.lastPlayResult = null // Сбросить результат при входе в игру
   try {
-    // Создаём новую игру
-    const { data } = await gamesStore.createGame({
-      name: 'Кости',
-      chance: 0.1,
-      rtp: 15,
-    })
-    createdGameId.value = data
-    await gamesStore.fetchGameById(data)
+    // Используем фиксированный ID для игры в кости
+    const gameId = gamesStore.getGameIdByRoute('dice')
+    if (gameId) {
+      createdGameId.value = gameId
+      await gamesStore.fetchGameById(gameId)
+    } else {
+      console.error('Не найден ID игры для костей')
+    }
   } catch (e) {
     console.error('Ошибка при инициализации игры:', e)
   }

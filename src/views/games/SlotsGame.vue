@@ -137,14 +137,14 @@ async function onPlay() {
 async function initializeGame() {
   gamesStore.lastPlayResult = null // Сбросить результат при входе в игру
   try {
-    // Создаём новую игру
-    const { data } = await gamesStore.createGame({
-      name: 'Слоты',
-      chance: 0.1,
-      rtp: 15,
-    })
-    createdGameId.value = data
-    await gamesStore.fetchGameById(data)
+    // Используем фиксированный ID для слотов
+    const gameId = gamesStore.getGameIdByRoute('slots')
+    if (gameId) {
+      createdGameId.value = gameId
+      await gamesStore.fetchGameById(gameId)
+    } else {
+      console.error('Не найден ID игры для слотов')
+    }
   } catch (e) {
     console.error('Ошибка при инициализации игры:', e)
   }

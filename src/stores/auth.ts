@@ -122,12 +122,26 @@ export const useAuthStore = defineStore('auth', () => {
       const { data } = await userApi.getProfile()
       user.value = data
       error.value = null
+
+      // Инициализируем игры после успешной загрузки пользователя
+      await initializeGamesAfterAuth()
     } catch (err: unknown) {
       console.error('Fetch user error:', err)
       clearTokens()
       error.value = err instanceof Error ? err.message : 'Ошибка при загрузке профиля'
     } finally {
       loading.value = false
+    }
+  }
+
+  async function initializeGamesAfterAuth() {
+    try {
+      // Динамический импорт для избежания циклических зависимостей
+      const { useGamesStore } = await import('./games')
+      const gamesStore = useGamesStore()
+      await gamesStore.initializeGames()
+    } catch (error) {
+      console.error('Ошибка при инициализации игр:', error)
     }
   }
 

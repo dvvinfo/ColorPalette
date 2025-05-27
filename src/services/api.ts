@@ -72,10 +72,10 @@ export interface StatusResponse {
 // API методы
 export const authApi = {
   register: (data: { username: string; email: string; password: string }) =>
-    api.post<AuthResponse>('/auth/registration', data),
+    api.post<AuthResponse>('/auth/registration/', data),
 
   login: (data: { username: string; password: string }) =>
-    api.post<AuthResponse>('/auth/login', data),
+    api.post<AuthResponse>('/auth/login/', data),
 
   refresh: () => api.post<RefreshResponse>('/auth/refresh'),
 
