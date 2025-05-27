@@ -4,8 +4,37 @@ import Cookies from 'js-cookie'
 
 // const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 
+// Определяем базовый URL в зависимости от режима
+const getBaseURL = () => {
+  // Логируем для отладки
+  console.log('🔍 Environment check:', {
+    DEV: import.meta.env.DEV,
+    PROD: import.meta.env.PROD,
+    MODE: import.meta.env.MODE,
+    hostname: typeof window !== 'undefined' ? window.location.hostname : 'server',
+    VITE_API_BASE_URL: import.meta.env.VITE_API_BASE_URL
+  })
+
+  // В режиме разработки используем Vite прокси
+  if (import.meta.env.DEV) {
+    console.log('🚀 Using DEV mode - Vite proxy: /api')
+    return '/api'
+  }
+
+  // В продакшене на Vercel используем API route для проксирования
+  if (typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')) {
+    console.log('🌐 Using Vercel production - API proxy: /api/proxy')
+    return '/api/proxy'
+  }
+
+  // Для других случаев (например, самостоятельный хостинг)
+  const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://77.246.247.145'
+  console.log('🏠 Using direct connection:', baseUrl)
+  return baseUrl
+}
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL: getBaseURL(),
   headers: {
     'Content-Type': 'application/json',
   },
@@ -72,52 +101,62 @@ export interface StatusResponse {
 // API методы
 export const authApi = {
   register: (data: { username: string; email: string; password: string }) =>
-    api.post<AuthResponse>('/auth/registration/', data),
+    api.post<AuthResponse>('/api/registration', data),
 
   login: (data: { username: string; password: string }) =>
-    api.post<AuthResponse>('/auth/login/', data),
+    api.post<AuthResponse>('/api/auth/login', data),
 
-  refresh: () => api.post<RefreshResponse>('/auth/refresh'),
+  refresh: () => api.post<RefreshResponse>('/api/refresh'),
 
-  googleAuth: () => api.post<AuthResponse>('/auth/google'),
+  googleAuth: () => api.post<AuthResponse>('/api/google'),
 
-  telegramAuth: () => api.post<AuthResponse>('/auth/telegram'),
+  telegramAuth: () => api.post<AuthResponse>('/api/telegram'),
 
-  vkAuth: () => api.post<AuthResponse>('/auth/vk'),
+  vkAuth: () => api.post<AuthResponse>('/api/vk'),
 
-  googleCallback: (code: string) => api.get<AuthResponse>(`/auth/google/callback?code=${code}`),
+  googleCallback: (code: string) => api.get<AuthResponse>(`/api/google/callback?code=${code}`),
 }
 
 export const userApi = {
-  getProfile: () => api.get<User>('/user/me'),
+  getProfile: () => api.get<User>('/api/user/me'),
 
-  getAllUsers: () => api.get<User[]>('/user'),
+  getAllUsers: () => api.get<User[]>('/api/user/'),
 
-  getUserById: (id: number) => api.get<User>(`/user/${id}`),
+  getUserById: (id: number) => api.get<User>(`/api/user/${id}`),
 
-  updateProfile: (data: Partial<User>) => api.put<User>('/user/me', data),
+  updateProfile: (data: Partial<User>) => api.put<User>('/api/user/me', data),
+
+  updateUser: (id: number, data: Partial<User>) => api.put<User>(`/api/user/${id}`, data),
+
+    setUserRole: (userId: number, roleId: number) =>
+    api.put<StatusResponse>(`/api/user/${userId}/role`, { role_id: roleId }),
+
+  setUserBalance: (userId: number, amount: number) =>
+    api.put<StatusResponse>(`/api/user/${userId}/balance`, { amount }),
 }
 
+
+
 export const balanceApi = {
-  getBalance: () => api.get<{ balance: number }>('/balance/'),
+  getBalance: () => api.get<{ balance: number }>('/api/balance/'),
 
   deposit: (data: { amount: number; method: string }) =>
-    api.post<StatusResponse>('/balance/deposit', data),
+    api.post<StatusResponse>('/api/balance/deposit', data),
 
   withdraw: (data: { amount: number; method: string }) =>
-    api.post<StatusResponse>('/balance/withdraw', data),
+    api.post<StatusResponse>('/api/balance/withdraw', data),
 }
 
 export const gamesApi = {
-  getAll: () => api.get<Game[]>('/game/'),
+  getAll: () => api.get<Game[]>('/api/game/list'),
 
-  getById: (id: number) => api.get<Game>(`/game/${id}`),
+  getById: (id: number) => api.get<Game>(`/api/game/${id}`),
 
-  create: (data: { name: string; chance: number; rtp: number }) => api.post<number>('/game/', data),
+  create: (data: { name: string; chance: number; rtp: number }) => api.post<number>('/api/game/', data),
 
-  update: (id: number, data: Partial<Game>) => api.put<StatusResponse>(`/game/${id}`, data),
+  update: (id: number, data: Partial<Game>) => api.put<StatusResponse>(`/api/game/${id}`, data),
 
-  play: (id: number, data: { bet: number }) => api.post<GamePlayResponse>(`/game/${id}/play`, data),
+  play: (id: number, data: { bet: number }) => api.post<GamePlayResponse>(`/api/game/${id}/play`, data),
 }
 
 // Добавляем перехватчик для установки токена
@@ -147,10 +186,15 @@ api.interceptors.response.use(
           config.headers.Authorization = `Bearer ${data.access_token}`
           return api(config)
         }
-      } catch {
+            } catch {
         // Если не удалось обновить токен, выходим из системы
         Cookies.remove('access_token')
         Cookies.remove('refresh_token')
+
+        // Перенаправляем на страницу логина
+        if (typeof window !== 'undefined') {
+          window.location.href = '/login'
+        }
       }
     }
     return Promise.reject(error)
