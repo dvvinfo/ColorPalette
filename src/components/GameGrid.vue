@@ -1,14 +1,16 @@
 <template>
-  <div class="relative" >
+  <div class="relative">
     <!-- Champion Banner -->
     <div class="mb-6 rounded-lg overflow-hidden">
       <div
         class="flex relative flex-wrap md:flex-nowrap items-center before:content-[''] before:absolute before:w-full before:h-full before:bg-gradient-to-r before:from-secondary/80 before:to-primary/80 before:bg-black/30"
       >
         <div class="w-full p-6 absolute top-0 left-0">
-          <h2 class="text-2xl font-bold mb-2">Стань чемпионом</h2>
-          <p class="text-white/80 mb-4">поддержка чемпионатов</p>
-          <router-link to="/in-development" class="btn-primary">Промоакция</router-link>
+          <h2 class="text-2xl font-bold mb-2">{{ $t('messages.welcome') }}</h2>
+          <p class="text-white/80 mb-4">{{ $t('navigation.promotions') }}</p>
+          <router-link to="/in-development" class="btn-primary">{{
+            $t('navigation.promotions')
+          }}</router-link>
         </div>
         <div class="w-full flex justify-center">
           <img
@@ -37,7 +39,7 @@
             d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
           />
         </svg>
-        {{ activeTab === 'all' ? 'Все игры' : activeTab === 'popular' ? 'Популярные' : 'Новинки' }}
+        {{ getTabTitle(activeTab) }}
       </h2>
 
       <div v-if="totalPages > 1" class="flex items-center gap-2">
@@ -84,16 +86,16 @@
     <div class="mb-4 overflow-x-auto">
       <div class="flex gap-2 min-w-max">
         <BaseButton @click="activeTab = 'all'" :variant="activeTab === 'all' ? 'primary' : 'ghost'">
-          Все игры
+          {{ $t('games.allGames') }}
         </BaseButton>
         <BaseButton
           @click="activeTab = 'popular'"
           :variant="activeTab === 'popular' ? 'primary' : 'ghost'"
         >
-          Популярные
+          {{ $t('games.hotGames') }}
         </BaseButton>
         <BaseButton @click="activeTab = 'new'" :variant="activeTab === 'new' ? 'primary' : 'ghost'">
-          Новинки
+          {{ $t('games.newGames') }}
         </BaseButton>
       </div>
     </div>
@@ -107,19 +109,38 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import GameCard from './GameCard.vue'
 import BaseButton from './BaseButton.vue'
-import { games, newGames } from '../assets/mock/games'
+import { getGames, getNewGames } from '../assets/mock/games'
 
+const { t } = useI18n()
 const activeTab = ref<'all' | 'popular' | 'new'>('all')
 const currentPage = ref(1)
 const gamesPerPage = 12
 
+// Получаем переведенные данные игр
+const games = computed(() => getGames())
+const newGames = computed(() => getNewGames())
+
+const getTabTitle = (tab: string) => {
+  switch (tab) {
+    case 'all':
+      return t('games.allGames')
+    case 'popular':
+      return t('games.hotGames')
+    case 'new':
+      return t('games.newGames')
+    default:
+      return t('games.allGames')
+  }
+}
+
 const filteredGames = computed(() => {
-  if (activeTab.value === 'all') return games
-  if (activeTab.value === 'popular') return games.filter((g) => g.isHot)
-  if (activeTab.value === 'new') return newGames
-  return games
+  if (activeTab.value === 'all') return games.value
+  if (activeTab.value === 'popular') return games.value.filter((g) => g.isHot)
+  if (activeTab.value === 'new') return newGames.value
+  return games.value
 })
 
 const totalPages = computed(() => {

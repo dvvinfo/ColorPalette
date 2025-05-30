@@ -5,83 +5,109 @@
       <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
         <div class="footer-section">
           <h3 class="text-primary font-bold mb-2">
-            <router-link to="/" class="hover:text-primary">Казино</router-link>
+            <router-link to="/" class="hover:text-primary">{{ $t('header.casino') }}</router-link>
           </h3>
           <ul class="text-sm space-y-1">
             <li>
-              <router-link to="/in-development" class="hover:text-primary">Слоты</router-link>
+              <router-link to="/in-development" class="hover:text-primary">{{
+                $t('navigation.slots')
+              }}</router-link>
             </li>
             <li>
-              <router-link to="/in-development" class="hover:text-primary">Покер</router-link>
+              <router-link to="/in-development" class="hover:text-primary">{{
+                $t('footer.poker')
+              }}</router-link>
             </li>
             <li>
-              <router-link to="/in-development" class="hover:text-primary">Рулетка</router-link>
+              <router-link to="/in-development" class="hover:text-primary">{{
+                $t('navigation.roulette')
+              }}</router-link>
             </li>
             <li>
-              <router-link to="/in-development" class="hover:text-primary">Блэкджек</router-link>
+              <router-link to="/in-development" class="hover:text-primary">{{
+                $t('navigation.blackjack')
+              }}</router-link>
             </li>
           </ul>
         </div>
 
         <div class="footer-section">
           <h3 class="text-primary font-bold mb-2">
-            <router-link to="/bonuses" class="hover:text-primary">Бонусы</router-link>
+            <router-link to="/bonuses" class="hover:text-primary">{{
+              $t('navigation.promotions')
+            }}</router-link>
           </h3>
           <ul class="text-sm space-y-1">
             <li>
-              <router-link to="/bonuses" class="hover:text-primary">Приветственный</router-link>
+              <router-link to="/bonuses" class="hover:text-primary">{{
+                $t('footer.welcomeBonus')
+              }}</router-link>
             </li>
             <li>
-              <router-link to="/bonuses" class="hover:text-primary">Кэшбэк</router-link>
+              <router-link to="/bonuses" class="hover:text-primary">{{
+                $t('footer.cashback')
+              }}</router-link>
             </li>
             <li>
-              <router-link to="/bonuses" class="hover:text-primary">Промокоды</router-link>
+              <router-link to="/bonuses" class="hover:text-primary">{{
+                $t('footer.promoCodes')
+              }}</router-link>
             </li>
             <li>
-              <router-link to="/bonuses" class="hover:text-primary">VIP программа</router-link>
+              <router-link to="/bonuses" class="hover:text-primary">{{
+                $t('footer.vipProgram')
+              }}</router-link>
             </li>
           </ul>
         </div>
 
         <div class="footer-section">
-          <h3 class="text-primary font-bold mb-2">Информация</h3>
+          <h3 class="text-primary font-bold mb-2">{{ $t('footer.information') }}</h3>
           <ul class="text-sm space-y-1">
             <li>
-              <router-link to="/about" class="hover:text-primary">О нас</router-link>
+              <router-link to="/about" class="hover:text-primary">{{
+                $t('footer.aboutUs')
+              }}</router-link>
             </li>
             <li>
-              <router-link to="/terms" class="hover:text-primary">Правила и условия</router-link>
+              <router-link to="/terms" class="hover:text-primary">{{
+                $t('footer.termsConditions')
+              }}</router-link>
             </li>
             <li>
-              <router-link to="/betting-rules" class="hover:text-primary"
-                >Правила ставок</router-link
-              >
+              <router-link to="/betting-rules" class="hover:text-primary">{{
+                $t('footer.bettingRules')
+              }}</router-link>
             </li>
             <li>
-              <router-link to="/in-development" class="hover:text-primary"
-                >Политика конфиденциальности</router-link
-              >
+              <router-link to="/in-development" class="hover:text-primary">{{
+                $t('footer.privacyPolicy')
+              }}</router-link>
             </li>
           </ul>
         </div>
 
         <div class="footer-section">
-          <h3 class="text-primary font-bold mb-2">Поддержка</h3>
+          <h3 class="text-primary font-bold mb-2">{{ $t('navigation.support') }}</h3>
           <ul class="text-sm space-y-1">
-            <li><router-link to="/faq" class="hover:text-primary">FAQ</router-link></li>
             <li>
-              <router-link to="/in-development" class="hover:text-primary"
-                >Связаться с нами</router-link
-              >
+              <router-link to="/faq" class="hover:text-primary">{{ $t('footer.faq') }}</router-link>
             </li>
             <li>
-              <router-link to="/in-development" class="hover:text-primary">Оплата</router-link>
+              <router-link to="/in-development" class="hover:text-primary">{{
+                $t('footer.contactUs')
+              }}</router-link>
+            </li>
+            <li>
+              <router-link to="/in-development" class="hover:text-primary">{{
+                $t('footer.payment')
+              }}</router-link>
             </li>
           </ul>
         </div>
 
         <div class="footer-section">
-          <h3 class="text-primary font-bold mb-2">Приложения</h3>
+          <h3 class="text-primary font-bold mb-2">{{ $t('footer.apps') }}</h3>
           <ul class="text-sm space-y-1">
             <li>
               <router-link to="/in-development" class="hover:text-primary">Android</router-link>
@@ -99,7 +125,7 @@
         class="flex flex-col md:flex-row justify-between items-center pt-4 border-t border-white/10"
       >
         <div class="text-sm text-text-secondary mb-4 md:mb-0">
-          © 2025 Казино. Все права защищены.
+          © 2025 {{ $t('header.casino') }}. {{ $t('footer.allRightsReserved') }}
         </div>
 
         <div class="flex gap-4">

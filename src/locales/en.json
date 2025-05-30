@@ -1,0 +1,434 @@
+{
+  "common": {
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "play": "Play",
+    "demo": "Demo",
+    "balance": "Balance",
+    "deposit": "Deposit",
+    "withdraw": "Withdraw",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "close": "Close",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "inDevelopment": "Under Development",
+    "inDevelopmentText": "This section will be available soon.",
+    "stayTuned": "Stay tuned for updates!"
+  },
+  "header": {
+    "casino": "Casino",
+    "profile": "Profile",
+    "messages": "Messages",
+    "notifications": "Notifications"
+  },
+  "footer": {
+    "poker": "Poker",
+    "welcomeBonus": "Welcome Bonus",
+    "cashback": "Cashback",
+    "promoCodes": "Promo Codes",
+    "vipProgram": "VIP Program",
+    "information": "Information",
+    "aboutUs": "About Us",
+    "termsConditions": "Terms & Conditions",
+    "bettingRules": "Betting Rules",
+    "privacyPolicy": "Privacy Policy",
+    "faq": "FAQ",
+    "contactUs": "Contact Us",
+    "payment": "Payment",
+    "apps": "Apps",
+    "allRightsReserved": "All rights reserved"
+  },
+  "navigation": {
+    "home": "Home",
+    "games": "Games",
+    "slots": "Slots",
+    "roulette": "Roulette",
+    "blackjack": "Blackjack",
+    "wheel": "Wheel of Fortune",
+    "dice": "Dice",
+    "crash": "Crash",
+    "coinFlip": "Coin Flip",
+    "slotMachine": "Slot Machine",
+    "live": "Live",
+    "promotions": "Promotions",
+    "tournaments": "Tournaments",
+    "news": "News",
+    "support": "Support"
+  },
+  "games": {
+    "allGames": "All Games",
+    "newGames": "New Games",
+    "hotGames": "Hot Games",
+    "hot": "HOT",
+    "new": "NEW",
+    "categories": "Categories",
+    "provider": "Provider",
+    "rtp": "RTP",
+    "winChance": "Win Chance",
+    "bet": "Bet",
+    "enterBet": "Enter bet amount",
+    "minBet": "Min. bet",
+    "maxBet": "Max. bet",
+    "win": "Win",
+    "lose": "Lose",
+    "draw": "Draw!",
+    "tryAgain": "Try again!",
+    "congratulations": "Congratulations!",
+    "youWon": "You won",
+    "demoMode": "Demo Mode",
+    "loginToPlay": "Please login or register to play",
+    "popularGames": "Popular Games",
+    "loadingGames": "Loading games...",
+    "checkConnection": "Check your internet connection and try again",
+    "gamesNotFound": "Games not found",
+    "coinFlip": {
+      "heads": "Heads",
+      "tails": "Tails",
+      "debug": {
+        "gameIdNotFound": "Coin flip game ID not found"
+      }
+    },
+    "errors": {
+      "loadGamesError": "Failed to load games list",
+      "loadGameError": "Failed to load game",
+      "playGameError": "An error occurred while playing",
+      "initializeGamesError": "Failed to initialize games"
+    },
+    "debug": {
+      "playError": "Play error:",
+      "initializeError": "Game initialization error:",
+      "createError": "Game creation error:",
+      "gameIdNotFound": "Game ID not found when processing result"
+    }
+  },
+  "auth": {
+    "loginTitle": "Login",
+    "registerTitle": "Register",
+    "email": "Email",
+    "username": "Username",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "forgotPassword": "Forgot password?",
+    "rememberMe": "Remember me",
+    "loginWith": "Login with",
+    "registerWith": "Register with",
+    "alreadyHaveAccount": "Already have an account?",
+    "dontHaveAccount": "Don't have an account?",
+    "loginError": "Invalid email or password",
+    "registerError": "Registration error",
+    "loginSuccess": "Login successful",
+    "registerSuccess": "Registration successful",
+    "socialLoginError": "Error logging in with {provider}",
+    "testing": {
+      "title": "Social Authentication Testing",
+      "testData": "Test Data",
+      "testGoogle": "Test Google Auth",
+      "testTelegram": "Test Telegram Auth",
+      "testVK": "Test VK Auth",
+      "results": "Test Results",
+      "errors": {
+        "google": "Error testing Google Auth",
+        "telegram": "Error testing Telegram Auth",
+        "vk": "Error testing VK Auth"
+      }
+    },
+    "errors": {
+      "profileLoadError": "Error loading profile",
+      "gamesInitError": "Error initializing games"
+    }
+  },
+  "profile": {
+    "myProfile": "My Profile",
+    "myBonuses": "My Bonuses",
+    "betHistory": "Bet History",
+    "personalInfo": "Personal Information",
+    "changePassword": "Change Password",
+    "phone": "Phone",
+    "birthdate": "Birth Date",
+    "gender": "Gender",
+    "male": "Male",
+    "female": "Female",
+    "registrationDate": "Registration Date",
+    "userAvatar": "User Avatar",
+    "points": "Points",
+    "accountBalance": "Account Balance",
+    "cashier": "Cashier"
+  },
+  "deposit": {
+    "depositTitle": "Deposit Funds",
+    "withdrawTitle": "Withdraw Winnings",
+    "operationHistory": "Operation History",
+    "operationHistoryText": "Operation history will be displayed here",
+    "amount": "Amount",
+    "method": "Method",
+    "depositSuccess": "Successfully deposited",
+    "withdrawSuccess": "Successfully withdrawn",
+    "minAmount": "Minimum amount",
+    "maxAmount": "Maximum amount",
+    "debug": {
+      "depositError": "Deposit error:",
+      "withdrawError": "Withdrawal error:"
+    }
+  },
+  "bonus": {
+    "activate": "Activate",
+    "firstDepositFrom": "First deposit from",
+    "timeLeft": "Time left",
+    "depositAmountFrom": "Deposit amount from",
+    "promoCode": "Promo code",
+    "invalidPromoCode": "Invalid promo code",
+    "title": "Bonus"
+  },
+  "bonuses": {
+    "title": "Bonuses and Promotions",
+    "description": "Get generous bonuses and participate in profitable casino promotions",
+    "termsTitle": "Bonus Terms and Conditions",
+    "activated": "Activated",
+    "promoActivated": "Promo code successfully activated!",
+    "bonusActivated": "Bonus \"{title}\" successfully activated!",
+    "debug": {
+      "activating": "Activating bonus:",
+      "withPromoCode": "with promo code",
+      "invalidPromoCode": "Invalid promo code for bonus:"
+    },
+    "categories": {
+      "all": "All",
+      "welcome": "Welcome",
+      "deposit": "Deposit",
+      "freespins": "Free Spins",
+      "cashback": "Cashback",
+      "special": "Special"
+    },
+    "terms": {
+      "registeredOnly": "Bonuses are only available to registered users",
+      "oncePerBonus": "Each bonus can only be activated once",
+      "wagering": "Bonus funds must meet wagering requirements for withdrawal",
+      "limitedTime": "Bonuses have limited validity period",
+      "adminRights": "Administration reserves the right to change promotion terms"
+    },
+    "promoCode": {
+      "title": "Have a promo code?",
+      "subtitle": "Activate now!",
+      "description": "Enter your promo code and get a bonus",
+      "info": "Enter promo code to activate special bonus"
+    },
+    "tiktok": {
+      "title": "TikTok Bonus 115% + 20 FS",
+      "subtitle": "in Crazy Monkey",
+      "description": "Get 115% deposit bonus + 20 free spins",
+      "info": "Special bonus for TikTok subscribers"
+    },
+    "welcome": {
+      "title": "Up to 300,000 ₽ + 500 FS",
+      "subtitle": "+ Freebet",
+      "info": "Maximum welcome bonus for new players"
+    },
+    "depositBonus": {
+      "title": "10% Bonus",
+      "subtitle": "on minimum deposit",
+      "description": "For deposits from 1,000 ₽",
+      "info": "Additional bonus for subsequent deposits"
+    },
+    "weekend": {
+      "title": "Weekend Bonus 50%",
+      "subtitle": "Saturday and Sunday only",
+      "info": "Special weekend bonus"
+    },
+    "cashbackWeekly": {
+      "title": "Weekly Cashback 15%",
+      "subtitle": "return of lost funds",
+      "info": "Return part of lost funds for the week"
+    }
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "description": "Here you will find answers to the most popular questions about our casino",
+    "searchPlaceholder": "Search FAQ...",
+    "noAnswer": "Didn't find an answer to your question?",
+    "supportDescription": "Our support service works 24/7 and is ready to help you",
+    "contactSupport": "Contact Support",
+    "writeToChat": "Write to Chat",
+    "categories": {
+      "all": "All",
+      "account": "Account",
+      "games": "Games",
+      "payments": "Payments",
+      "bonuses": "Bonuses",
+      "security": "Security"
+    },
+    "items": {
+      "createAccount": {
+        "question": "How to create a casino account?",
+        "answer": "To create an account, click the \"Register\" button in the top right corner of the site. Fill in all required fields: email, password, first and last name. Then confirm your email address by clicking the link in the email."
+      },
+      "deposit": {
+        "question": "How to deposit funds?",
+        "answer": "You can deposit funds in several ways: bank card (Visa/Mastercard), electronic wallets (Qiwi, WebMoney, YuMoney), bank transfer or cryptocurrency. The minimum deposit amount is 100 rubles."
+      },
+      "withdraw": {
+        "question": "How to withdraw winnings?",
+        "answer": "To withdraw funds, go to the \"Cashier\" section and select \"Withdraw funds\". Specify the amount and withdrawal method. Processing takes from a few minutes to 24 hours depending on the withdrawal method."
+      },
+      "games": {
+        "question": "What games are available in the casino?",
+        "answer": "Our casino offers: slots from leading providers, table games (roulette, blackjack, poker), live casino with real dealers, sports betting and exclusive games."
+      },
+      "welcomeBonus": {
+        "question": "How to get welcome bonus?",
+        "answer": "Welcome bonus is credited automatically after the first deposit of 1000 rubles or more. The bonus is 100% of the deposit amount + 100 free spins in Book of Ra slot."
+      },
+      "wagering": {
+        "question": "What is wagering?",
+        "answer": "Wagering is a condition that must be met to withdraw bonus funds. For example, if wagering is x35, you need to bet an amount 35 times larger than the received bonus."
+      },
+      "security": {
+        "question": "Is it safe to play in your casino?",
+        "answer": "Yes, our casino is licensed and uses modern SSL encryption technologies to protect your data. All games are certified and use a random number generator."
+      },
+      "resetPassword": {
+        "question": "How to reset password?",
+        "answer": "Click \"Forgot password?\" on the login page, enter your email. You will receive an email with password reset instructions."
+      },
+      "mobile": {
+        "question": "Can I play from a mobile device?",
+        "answer": "Yes, our site is fully adapted for mobile devices. There is also a mobile app available for iOS and Android."
+      },
+      "withdrawLimits": {
+        "question": "What are the withdrawal limits?",
+        "answer": "Minimum withdrawal amount is 300 rubles. Maximum amount depends on VIP status: regular players - 100,000 rub/day, VIP players - no limits."
+      }
+    }
+  },
+  "about": {
+    "title": "Casino — Gambling tradition tested by time",
+    "description": "Have you heard about casino? About this famous, huge and magnificent gambling network, renowned for the best slots, biggest jackpots, excellent service and individual approach to each player. Do you know that the history of this establishment began many years ago, in times when gambling halls with slot machines were located on almost every street? The choice of such establishments was huge then, but not every one of them could boast of proper level, not to mention honesty. The online version of the famous casino continues the glorious tradition."
+  },
+  "terms": {
+    "content": "Here will be the content of the terms and conditions of use of our casino."
+  },
+  "bettingRules": {
+    "content": "Here will be described the betting rules and gameplay in our casino."
+  },
+  "jackpot": {
+    "title": "JACKPOT"
+  },
+  "notifications": {
+    "noNotifications": "No new notifications",
+    "clearAll": "Clear all notifications"
+  },
+  "promotions": {
+    "specialOffer": "Special Promotion",
+    "playNow": "Play Now!",
+    "offerDescription": "Get 50000₽ bonus on deposit and a chance to win the grand prize",
+    "startGame": "Start Game"
+  },
+  "validation": {
+    "required": "Required field",
+    "invalidEmail": "Invalid email format",
+    "minLength": "Minimum {count} characters",
+    "maxLength": "Maximum {count} characters",
+    "passwordMustContain": "Password must contain",
+    "uppercase": "uppercase letter",
+    "number": "number",
+    "passwordsMatch": "Passwords must match"
+  },
+  "messages": {
+    "welcome": "Welcome!",
+    "welcomeText": "Congratulations on joining the club! Ahead - a volcano of pleasure and big wins!",
+    "confirmEmail": "Confirm email",
+    "bonusActivated": "Bonus activated!",
+    "newPromotion": "New promotion",
+    "noNewMessages": "No new messages",
+    "markAllRead": "Mark all messages as read",
+    "enablePushNotifications": "Enable push notifications"
+  },
+  "news": {
+    "loadingNews": "Loading news...",
+    "readMore": "Read more",
+    "newsNotFound": "News not found",
+    "backToNews": "Back to news",
+    "latestNews": "Latest News",
+    "allNews": "All News",
+    "mockData": {
+      "bonuses": {
+        "title": "Bonuses and Promotions",
+        "description": "A grand prize draw will start soon. Participate in the draw and win prizes! Don't miss your chance to become a winner and get a big win.",
+        "date": "May 20, 2025"
+      },
+      "newGames": {
+        "title": "New Games",
+        "description": "Discover new exciting games in our casino. Try your luck on slots with progressive jackpots and unique bonus rounds.",
+        "date": "May 18, 2025"
+      },
+      "tournament": {
+        "title": "Slots Tournament",
+        "description": "Participate in the weekly slots tournament and win big prizes! Compete with other players for the title of the best and get exclusive rewards.",
+        "date": "May 15, 2025"
+      },
+      "platformUpdate": {
+        "title": "Platform Update",
+        "description": "We have improved our platform for more comfortable gaming. Learn about new features, improved interface and enhanced security of your account.",
+        "date": "May 12, 2025"
+      },
+      "loyalty": {
+        "title": "Loyalty Program",
+        "description": "New loyalty program with even greater benefits for our regular players. Earn points for every game and exchange them for valuable prizes.",
+        "date": "May 10, 2025"
+      }
+    },
+    "errors": {
+      "loadingError": "News loading error",
+      "generalError": "An error occurred while loading news"
+    }
+  },
+  "roulette": {
+    "lostMessage": "Unfortunately, you lost. Try again!",
+    "debug": {
+      "result": "Roulette result",
+      "selectedNumber": "Selected number",
+      "winningNumber": "Winning number",
+      "winAmount": "Win amount"
+    }
+  },
+  "wheel": {
+    "debug": {
+      "gameIdNotFound": "Wheel of Fortune game ID not found"
+    }
+  },
+  "slots": {
+    "debug": {
+      "gameIdNotFound": "Slots game ID not found"
+    }
+  },
+  "blackjack": {
+    "debug": {
+      "gameIdNotFound": "Blackjack game ID not found"
+    }
+  },
+  "dice": {
+    "debug": {
+      "gameIdNotFound": "Dice game ID not found"
+    }
+  },
+  "crash": {
+    "debug": {
+      "gameIdNotFound": "Crash game ID not found"
+    }
+  },
+  "slotMachine": {
+    "title": "Slot Machine",
+    "debug": {
+      "gameIdNotFound": "Slot machine game ID not found"
+    }
+  },
+  "slotMachinePure": {
+    "title": "Slots (Vue)"
+  }
+}

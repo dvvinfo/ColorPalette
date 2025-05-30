@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-background w-full">
     <div v-if="newsStore.loading" class="flex justify-center items-center h-64">
-      <div class="text-lg">Загрузка новостей...</div>
+      <div class="text-lg">{{ $t('news.loadingNews') }}</div>
     </div>
 
     <div v-else-if="newsStore.error" class="flex justify-center items-center h-64">
@@ -27,7 +27,7 @@
       <div class="w-full md:w-1/4">
         <!-- Jackpot Counter -->
         <JackpotCounter class="mb-8" />
-        <BonusCard title="Бонус" amount="1000" :time="10000" class="mb-8" />
+        <BonusCard :title="$t('bonus.title')" amount="1000" :time="10000" class="mb-8" />
         <!-- Promotions Side Panel -->
         <PromotionPanel />
       </div>

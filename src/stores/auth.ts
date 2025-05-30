@@ -1,10 +1,12 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import type { User } from '@/services/api'
 import { authApi, userApi } from '@/services/api'
 import Cookies from 'js-cookie'
 
 export const useAuthStore = defineStore('auth', () => {
+  const { t } = useI18n()
   const user = ref<User | null>(null)
   const accessToken = ref<string | null>(Cookies.get('access_token') || null)
   const refreshToken = ref<string | null>(Cookies.get('refresh_token') || null)
@@ -128,7 +130,7 @@ export const useAuthStore = defineStore('auth', () => {
     } catch (err: unknown) {
       console.error('Fetch user error:', err)
       clearTokens()
-      error.value = err instanceof Error ? err.message : 'Ошибка при загрузке профиля'
+      error.value = err instanceof Error ? err.message : t('auth.errors.profileLoadError')
     } finally {
       loading.value = false
     }
@@ -141,7 +143,7 @@ export const useAuthStore = defineStore('auth', () => {
       const gamesStore = useGamesStore()
       await gamesStore.initializeGames()
     } catch (error) {
-      console.error('Ошибка при инициализации игр:', error)
+      console.error(t('auth.errors.gamesInitError'), error)
     }
   }
 

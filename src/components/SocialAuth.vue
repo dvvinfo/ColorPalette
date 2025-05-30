@@ -7,7 +7,7 @@
       :disabled="loading"
     >
       <img src="@/assets/google-icon.svg" alt="Google" class="w-6 h-6" />
-      Войти через Google
+      {{ $t('auth.loginWith') }} Google
     </BaseButton>
 
     <BaseButton
@@ -17,7 +17,7 @@
       :disabled="loading"
     >
       <img src="@/assets/telegram-icon.svg" alt="Telegram" class="w-6 h-6" />
-      Войти через Telegram
+      {{ $t('auth.loginWith') }} Telegram
     </BaseButton>
 
     <BaseButton
@@ -27,7 +27,7 @@
       :disabled="loading"
     >
       <img src="@/assets/vk-icon.svg" alt="VK" class="w-6 h-6" />
-      Войти через VK
+      {{ $t('auth.loginWith') }} VK
     </BaseButton>
 
     <div v-if="error" class="text-red-500 text-sm text-center mt-2">
@@ -41,7 +41,9 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import BaseButton from './BaseButton.vue'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const router = useRouter()
 const authStore = useAuthStore()
 const loading = ref(false)
@@ -54,7 +56,8 @@ const handleGoogleLogin = async () => {
     await authStore.loginWithGoogle()
     router.push('/')
   } catch (err) {
-    error.value = err instanceof Error ? err.message : 'Ошибка при входе через Google'
+    error.value =
+      err instanceof Error ? err.message : t('auth.socialLoginError', { provider: 'Google' })
   } finally {
     loading.value = false
   }
@@ -67,7 +70,8 @@ const handleTelegramLogin = async () => {
     await authStore.loginWithTelegram()
     router.push('/')
   } catch (err) {
-    error.value = err instanceof Error ? err.message : 'Ошибка при входе через Telegram'
+    error.value =
+      err instanceof Error ? err.message : t('auth.socialLoginError', { provider: 'Telegram' })
   } finally {
     loading.value = false
   }
@@ -80,7 +84,8 @@ const handleVKLogin = async () => {
     await authStore.loginWithVK()
     router.push('/')
   } catch (err) {
-    error.value = err instanceof Error ? err.message : 'Ошибка при входе через VK'
+    error.value =
+      err instanceof Error ? err.message : t('auth.socialLoginError', { provider: 'VK' })
   } finally {
     loading.value = false
   }

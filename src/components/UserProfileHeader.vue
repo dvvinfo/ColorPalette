@@ -3,7 +3,7 @@
     <div class="container mx-auto px-4 py-3 flex items-center justify-between">
       <!-- Logo -->
       <div class="text-primary font-bold text-3xl">
-        <span class="text-primary">Казино</span>
+        <span class="text-primary">{{ $t('header.casino') }}</span>
       </div>
 
       <!-- User Profile Section -->
@@ -15,7 +15,11 @@
             <div class="text-gray-400">{{ rank }} · {{ percentage }}%</div>
           </div>
           <div class="w-10 h-10 rounded-full overflow-hidden">
-            <img :src="avatarUrl" alt="Аватар пользователя" class="w-full h-full object-cover" />
+            <img
+              :src="avatarUrl"
+              :alt="$t('profile.userAvatar')"
+              class="w-full h-full object-cover"
+            />
           </div>
         </div>
 
@@ -70,21 +74,23 @@
         <!-- Информация о балансе -->
         <div class="flex items-center gap-4">
           <div class="text-sm">
-            <div class="text-gray-400">Кэшбэк</div>
+            <div class="text-gray-400">{{ $t('footer.cashback') }}</div>
             <div class="text-white">{{ cashback }} ₽</div>
           </div>
           <div class="text-sm">
-            <div class="text-gray-400">Баллы</div>
+            <div class="text-gray-400">{{ $t('profile.points') }}</div>
             <div class="text-white">{{ points }}</div>
           </div>
           <div class="text-sm">
-            <div class="text-gray-400">На счете</div>
+            <div class="text-gray-400">{{ $t('profile.accountBalance') }}</div>
             <div class="text-white">{{ balance }} ₽</div>
           </div>
         </div>
 
         <!-- Кнопка Кассы -->
-        <BaseButton variant="primary" size="sm" @click="emit('openCashier')"> Касса </BaseButton>
+        <BaseButton variant="primary" size="sm" @click="emit('openCashier')">
+          {{ $t('profile.cashier') }}
+        </BaseButton>
       </div>
     </div>
 

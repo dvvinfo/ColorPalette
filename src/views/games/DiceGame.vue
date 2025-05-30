@@ -3,7 +3,7 @@
     <div class="bg-card-bg rounded-lg p-6">
       <div class="flex items-center gap-4 mb-6">
         <BackButton />
-        <h1 class="text-2xl font-bold">Dice Game</h1>
+        <h1 class="text-2xl font-bold">{{ t('navigation.dice') }}</h1>
       </div>
 
       <!-- Игровое поле через iframe -->
@@ -26,7 +26,7 @@
             <BaseInput
               v-model="bet"
               type="text"
-              placeholder="Введите ставку"
+              :placeholder="$t('games.enterBet')"
               class="pr-10"
               required
               @input="onBetInput"
@@ -53,7 +53,7 @@
             class="text-white text-lg font-bold py-3 rounded-lg"
             :disabled="!isValid || gamesStore.loading"
           >
-            {{ gamesStore.loading ? 'Загрузка...' : 'Играть' }}
+            {{ gamesStore.loading ? $t('common.loading') : $t('common.play') }}
           </BaseButton>
 
           <div v-if="gamesStore.error" class="text-red-500 text-sm text-center">
@@ -73,10 +73,10 @@
             <div class="text-xl">
               {{
                 (lastResult.result as string) === 'win'
-                  ? `Выигрыш: ${lastResult.win_amount} ₽`
+                  ? `${$t('games.youWon')}: ${lastResult.win_amount} ₽`
                   : (lastResult.result as string) === 'draw'
-                    ? 'Ничья!'
-                    : 'Попробуйте еще раз!'
+                    ? $t('games.draw')
+                    : $t('games.tryAgain')
               }}
             </div>
           </div>
@@ -89,9 +89,11 @@
         class="max-w-md mx-auto text-center p-6 rounded-lg shadow"
         style="background: var(--card-bg)"
       >
-        <h3 class="text-xl font-bold mb-2" style="color: var(--primary)">Демо-режим</h3>
+        <h3 class="text-xl font-bold mb-2" style="color: var(--primary)">
+          {{ $t('games.demoMode') }}
+        </h3>
         <p class="mb-0 text-lg" style="color: var(--text-primary)">
-          Чтобы играть, нужно авторизоваться или зарегистрироваться
+          {{ $t('games.loginToPlay') }}
         </p>
       </div>
     </div>
@@ -100,12 +102,14 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import BackButton from '@/components/BackButton.vue'
 import BaseInput from '@/components/BaseInput.vue'
 import BaseButton from '@/components/BaseButton.vue'
 import { useGamesStore } from '@/stores/games'
 import { useAuthStore } from '@/stores/auth'
 
+const { t } = useI18n()
 const gamesStore = useGamesStore()
 const authStore = useAuthStore()
 const bet = ref<string | number>('')
@@ -125,10 +129,10 @@ async function initializeGame() {
       createdGameId.value = gameId
       await gamesStore.fetchGameById(gameId)
     } else {
-      console.error('Не найден ID игры для костей')
+      console.error(t('games.dice.debug.gameIdNotFound'))
     }
   } catch (e) {
-    console.error('Ошибка при инициализации игры:', e)
+    console.error(t('games.debug.initializeError'), e)
   }
 }
 
@@ -145,7 +149,7 @@ async function onPlay() {
       }
       bet.value = ''
     } catch (error) {
-      console.error('Ошибка при игре:', error)
+      console.error(t('games.debug.playError'), error)
     }
   }
 }

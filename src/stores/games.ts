@@ -1,11 +1,13 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import type { Game, GamePlayResponse } from '@/services/api'
 import { gamesApi } from '@/services/api'
 import { useBalanceStore } from './balance'
-import { GAME_CONFIGS, getGameConfigById, getGameConfigByRoute } from '@/config/games'
+import { GAME_CONFIGS, getGameConfigById, getGameConfigByRoute, getGameName } from '@/config/games'
 
 export const useGamesStore = defineStore('games', () => {
+  const { t } = useI18n()
   const games = ref<Game[]>([])
   const currentGame = ref<Game | null>(null)
   const lastPlayResult = ref<GamePlayResponse | null>(null)
@@ -21,7 +23,7 @@ export const useGamesStore = defineStore('games', () => {
       games.value = data
       error.value = null
     } catch (err) {
-      error.value = 'Не удалось загрузить список игр'
+      error.value = t('games.errors.loadGamesError')
       console.error('Ошибка при загрузке игр:', err)
     } finally {
       loading.value = false
@@ -35,7 +37,7 @@ export const useGamesStore = defineStore('games', () => {
       currentGame.value = data
       error.value = null
     } catch (err) {
-      error.value = 'Не удалось загрузить игру'
+      error.value = t('games.errors.loadGameError')
       console.error('Ошибка при загрузке игры:', err)
     } finally {
       loading.value = false
@@ -52,7 +54,7 @@ export const useGamesStore = defineStore('games', () => {
       error.value = null
       return data
     } catch (err) {
-      error.value = 'Произошла ошибка при игре'
+      error.value = t('games.errors.playGameError')
       console.error('Ошибка при игре:', err)
       throw err
     } finally {
@@ -79,7 +81,7 @@ export const useGamesStore = defineStore('games', () => {
         } catch {
           // Если игра не найдена, создаем её с нужным ID
           await gamesApi.create({
-            name: config.name,
+            name: getGameName(config.route),
             chance: config.chance,
             rtp: config.rtp,
           })
@@ -88,7 +90,7 @@ export const useGamesStore = defineStore('games', () => {
       gamesInitialized.value = true
     } catch (err) {
       console.error('Ошибка при инициализации игр:', err)
-      error.value = 'Не удалось инициализировать игры'
+      error.value = t('games.errors.initializeGamesError')
     } finally {
       loading.value = false
     }

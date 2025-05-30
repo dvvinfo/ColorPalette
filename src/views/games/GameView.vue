@@ -15,8 +15,8 @@
           <div v-if="lastResult" class="text-xl">
             {{
               lastResult.result === 'win'
-                ? `Выигрыш: ${lastResult.win_amount} ₽`
-                : 'Попробуйте еще раз!'
+                ? `${$t('games.youWon')}: ${lastResult.win_amount} ₽`
+                : $t('games.tryAgain')
             }}
           </div>
         </div>
@@ -29,7 +29,7 @@
             <BaseInput
               v-model="bet"
               type="text"
-              placeholder="Введите ставку"
+              :placeholder="$t('games.enterBet')"
               class="pr-10"
               required
               @input="onBetInput"
@@ -56,7 +56,7 @@
             class="bg-red-600 hover:bg-red-700 text-white text-lg font-bold py-3 rounded-lg"
             :disabled="!isValid || gamesStore.loading"
           >
-            {{ gamesStore.loading ? 'Загрузка...' : 'Играть' }}
+            {{ gamesStore.loading ? $t('common.loading') : $t('common.play') }}
           </BaseButton>
 
           <div v-if="gamesStore.error" class="text-red-500 text-sm text-center">
@@ -68,11 +68,11 @@
       <!-- Информация об игре -->
       <div v-if="game" class="mt-8 grid grid-cols-2 gap-4 text-center">
         <div class="bg-black/20 p-4 rounded-lg">
-          <div class="text-gray-400">RTP</div>
+          <div class="text-gray-400">{{ $t('games.rtp') }}</div>
           <div class="text-xl font-bold">{{ game.rtp }}%</div>
         </div>
         <div class="bg-black/20 p-4 rounded-lg">
-          <div class="text-gray-400">Шанс выигрыша</div>
+          <div class="text-gray-400">{{ $t('games.winChance') }}</div>
           <div class="text-xl font-bold">{{ game.chance }}%</div>
         </div>
       </div>

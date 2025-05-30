@@ -7,9 +7,9 @@
 
         <!-- Page Header -->
         <div class="mb-8">
-          <h1 class="text-3xl font-bold text-text-primary mb-4">Бонусы и акции</h1>
+          <h1 class="text-3xl font-bold text-text-primary mb-4">{{ $t('bonuses.title') }}</h1>
           <p class="text-text-secondary text-lg">
-            Получайте щедрые бонусы и участвуйте в выгодных акциях нашего казино
+            {{ $t('bonuses.description') }}
           </p>
         </div>
 
@@ -23,7 +23,7 @@
               :variant="selectedCategory === category.id ? 'primary' : 'outline'"
               size="sm"
             >
-              {{ category.name }}
+              {{ $t(category.nameKey) }}
             </BaseButton>
           </div>
         </div>
@@ -33,19 +33,19 @@
           <UniversalBonus
             v-for="bonus in filteredBonuses"
             :key="bonus.id"
-            :title="bonus.title"
-            :subtitle="bonus.subtitle"
+            :title="$t(bonus.titleKey)"
+            :subtitle="bonus.subtitleKey ? $t(bonus.subtitleKey) : bonus.subtitle"
             :amount="bonus.amount"
-            :description="bonus.description"
+            :description="bonus.descriptionKey ? $t(bonus.descriptionKey) : bonus.description"
             :requirements="bonus.requirements"
-            :button-text="bonus.buttonText"
+            :button-text="$t(bonus.buttonTextKey || 'bonus.activate')"
             :button-variant="bonus.buttonVariant"
             :disabled="bonus.disabled"
             :needs-promo-code="bonus.needsPromoCode"
             :has-invalid-promo="bonus.hasInvalidPromo"
             :background-type="bonus.backgroundType"
             :background-image="bonus.backgroundImage"
-            :info-text="bonus.infoText"
+            :info-text="bonus.infoTextKey ? $t(bonus.infoTextKey) : bonus.infoText"
             :is-activated="bonus.isActivated"
             @activate="handleActivateBonus(bonus.id, $event)"
             @invalid-promo="handleInvalidPromo(bonus.id)"
@@ -54,13 +54,15 @@
 
         <!-- Terms and Conditions -->
         <div class="bg-card-bg rounded-lg p-6 border border-border">
-          <h3 class="text-xl font-semibold text-text-primary mb-4">Условия получения бонусов</h3>
+          <h3 class="text-xl font-semibold text-text-primary mb-4">
+            {{ $t('bonuses.termsTitle') }}
+          </h3>
           <div class="text-text-secondary space-y-2 text-sm">
-            <p>• Бонусы доступны только зарегистрированным пользователям</p>
-            <p>• Каждый бонус можно активировать только один раз</p>
-            <p>• Для вывода бонусных средств необходимо выполнить условия отыгрыша</p>
-            <p>• Бонусы имеют ограниченный срок действия</p>
-            <p>• Администрация оставляет за собой право изменять условия акций</p>
+            <p>• {{ $t('bonuses.terms.registeredOnly') }}</p>
+            <p>• {{ $t('bonuses.terms.oncePerBonus') }}</p>
+            <p>• {{ $t('bonuses.terms.wagering') }}</p>
+            <p>• {{ $t('bonuses.terms.limitedTime') }}</p>
+            <p>• {{ $t('bonuses.terms.adminRights') }}</p>
           </div>
         </div>
       </div>
@@ -76,131 +78,136 @@ import UniversalBonus from '@/components/UniversalBonus.vue'
 import BackButton from '@/components/BackButton.vue'
 import BaseButton from '@/components/BaseButton.vue'
 import RightSidebar from '@/components/RightSidebar.vue'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const selectedCategory = ref('all')
 
 interface Category {
   id: string
-  name: string
+  nameKey: string
 }
 
 interface BonusItem {
   id: string
-  title: string
+  titleKey: string
+  subtitleKey?: string
   subtitle?: string
   amount?: string
+  descriptionKey?: string
   description?: string
   requirements?: {
     deposit?: string
     timer?: string
     minAmount?: string
   }
-  buttonText?: string
+  buttonTextKey?: string
   buttonVariant?: 'primary' | 'secondary' | 'outline' | 'ghost'
   disabled?: boolean
   needsPromoCode?: boolean
   hasInvalidPromo?: boolean
   backgroundType?: 'red' | 'blue' | 'purple' | 'gradient'
   backgroundImage?: string
+  infoTextKey?: string
   infoText?: string
   isActivated?: boolean
   category: string
 }
 
 const categories: Category[] = [
-  { id: 'all', name: 'Все' },
-  { id: 'welcome', name: 'Приветственные' },
-  { id: 'deposit', name: 'На депозит' },
-  { id: 'freespins', name: 'Фриспины' },
-  { id: 'cashback', name: 'Кэшбэк' },
-  { id: 'special', name: 'Специальные' },
+  { id: 'all', nameKey: 'bonuses.categories.all' },
+  { id: 'welcome', nameKey: 'bonuses.categories.welcome' },
+  { id: 'deposit', nameKey: 'bonuses.categories.deposit' },
+  { id: 'freespins', nameKey: 'bonuses.categories.freespins' },
+  { id: 'cashback', nameKey: 'bonuses.categories.cashback' },
+  { id: 'special', nameKey: 'bonuses.categories.special' },
 ]
 
 const bonuses = ref<BonusItem[]>([
   {
     id: 'promo-code',
-    title: 'Есть промокод?',
-    subtitle: 'Активируй сейчас!',
-    description: 'Введите ваш промокод и получите бонус',
-    buttonText: 'Активировать',
+    titleKey: 'bonuses.promoCode.title',
+    subtitleKey: 'bonuses.promoCode.subtitle',
+    descriptionKey: 'bonuses.promoCode.description',
+    buttonTextKey: 'bonus.activate',
     buttonVariant: 'primary',
     needsPromoCode: true,
     backgroundType: 'red',
-    infoText: 'Введите промокод для активации специального бонуса',
+    infoTextKey: 'bonuses.promoCode.info',
     category: 'special',
   },
   {
     id: 'tiktok-bonus',
-    title: 'Бонус TikTok 115% и 20 FS',
-    subtitle: 'в Crazy Monkey',
+    titleKey: 'bonuses.tiktok.title',
+    subtitleKey: 'bonuses.tiktok.subtitle',
     amount: 'На депозит от 600 ₽',
-    description: 'Получите 115% к депозиту + 20 фриспинов',
+    descriptionKey: 'bonuses.tiktok.description',
     requirements: {
       deposit: '600 ₽',
     },
-    buttonText: 'Активировать',
+    buttonTextKey: 'bonus.activate',
     buttonVariant: 'primary',
     backgroundType: 'purple',
-    infoText: 'Специальный бонус для подписчиков TikTok',
+    infoTextKey: 'bonuses.tiktok.info',
     category: 'special',
   },
   {
     id: 'welcome-bonus',
-    title: 'До 300 000 ₽ и 500 FS',
-    subtitle: '+ Freebet',
+    titleKey: 'bonuses.welcome.title',
+    subtitleKey: 'bonuses.welcome.subtitle',
     amount: 'Первый депозит от 550 ₽',
     description: 'До завершения 03:00:00',
     requirements: {
       deposit: '550 ₽',
       timer: '03:00:00',
     },
-    buttonText: 'Активировать',
+    buttonTextKey: 'bonus.activate',
     buttonVariant: 'primary',
     backgroundType: 'blue',
-    infoText: 'Максимальный приветственный бонус для новых игроков',
+    infoTextKey: 'bonuses.welcome.info',
     category: 'welcome',
   },
   {
     id: 'deposit-bonus',
-    title: 'Бонус 10%',
-    subtitle: 'на минимальный депозит',
+    titleKey: 'bonuses.depositBonus.title',
+    subtitleKey: 'bonuses.depositBonus.subtitle',
     amount: 'Осталось внести еще 1000 ₽',
-    description: 'На сумму депозитов от 1 000 ₽',
+    descriptionKey: 'bonuses.depositBonus.description',
     requirements: {
       minAmount: '1 000 ₽',
       timer: '02:00:00',
     },
-    buttonText: 'Активировать',
+    buttonTextKey: 'bonus.activate',
     buttonVariant: 'primary',
     backgroundType: 'gradient',
-    infoText: 'Дополнительный бонус на последующие депозиты',
+    infoTextKey: 'bonuses.depositBonus.info',
     category: 'deposit',
   },
   {
     id: 'weekend-bonus',
-    title: 'Выходной бонус 50%',
-    subtitle: 'только в субботу и воскресенье',
+    titleKey: 'bonuses.weekend.title',
+    subtitleKey: 'bonuses.weekend.subtitle',
     amount: 'До 50 000 ₽',
     description: 'Минимальный депозит 1000 ₽',
     requirements: {
       deposit: '1 000 ₽',
     },
-    buttonText: 'Активировать',
+    buttonTextKey: 'bonus.activate',
     buttonVariant: 'primary',
     backgroundType: 'blue',
-    infoText: 'Специальный бонус для выходных дней',
+    infoTextKey: 'bonuses.weekend.info',
     category: 'special',
   },
   {
     id: 'cashback-weekly',
-    title: 'Еженедельный кэшбэк 15%',
-    subtitle: 'возврат проигранных средств',
+    titleKey: 'bonuses.cashbackWeekly.title',
+    subtitleKey: 'bonuses.cashbackWeekly.subtitle',
     amount: 'До 25 000 ₽',
     description: 'Каждый понедельник',
-    buttonText: 'Активировать',
+    buttonTextKey: 'bonus.activate',
     buttonVariant: 'primary',
     backgroundType: 'purple',
-    infoText: 'Возврат части проигранных средств за неделю',
+    infoTextKey: 'bonuses.cashbackWeekly.info',
     category: 'cashback',
   },
 ])
@@ -216,16 +223,20 @@ const handleActivateBonus = (bonusId: string, promoCode?: string) => {
   const bonus = bonuses.value.find((b) => b.id === bonusId)
   if (!bonus) return
 
-  console.log('Активация бонуса:', bonusId, promoCode ? `с промокодом: ${promoCode}` : '')
+  console.log(
+    t('bonuses.debug.activating'),
+    bonusId,
+    promoCode ? `${t('bonuses.debug.withPromoCode')}: ${promoCode}` : '',
+  )
 
   // Эмуляция активации бонуса
   if (promoCode && bonusId === 'promo-code') {
     // Проверка промокода (эмуляция)
     if (promoCode.toLowerCase() === 'test123') {
       bonus.isActivated = true
-      bonus.buttonText = 'Активирован'
+      bonus.buttonTextKey = 'bonuses.activated'
       bonus.disabled = true
-      alert('Промокод успешно активирован!')
+      alert(t('bonuses.promoActivated'))
     } else {
       bonus.hasInvalidPromo = true
       setTimeout(() => {
@@ -234,15 +245,15 @@ const handleActivateBonus = (bonusId: string, promoCode?: string) => {
     }
   } else {
     bonus.isActivated = true
-    bonus.buttonText = 'Активирован'
+    bonus.buttonTextKey = 'bonuses.activated'
     bonus.disabled = true
-    alert(`Бонус "${bonus.title}" успешно активирован!`)
+    alert(t('bonuses.bonusActivated', { title: t(bonus.titleKey) }))
   }
 }
 
 const handleInvalidPromo = (bonusId: string) => {
-  console.log('Неверный промокод для бонуса:', bonusId)
-  alert('Неверный промокод. Попробуйте еще раз.')
+  console.log(t('bonuses.debug.invalidPromoCode'), bonusId)
+  alert(t('bonus.invalidPromoCode'))
 }
 </script>
 

@@ -3,7 +3,7 @@
     <div class="bg-card-bg rounded-lg p-6">
       <div class="flex items-center gap-4 mb-6">
         <BackButton />
-        <h1 class="text-2xl font-bold">Монетка</h1>
+        <h1 class="text-2xl font-bold">{{ t('navigation.coinFlip') }}</h1>
       </div>
 
       <!-- Игровое поле -->
@@ -23,7 +23,7 @@
             <BaseInput
               v-model="bet"
               type="text"
-              placeholder="Введите ставку"
+              :placeholder="t('games.enterBet')"
               class="pr-10"
               required
               @input="onBetInput"
@@ -52,7 +52,7 @@
               :class="{ 'bg-green-600 text-white': selectedSide === 'heads' }"
               @click="selectedSide = 'heads'"
             >
-              Орёл
+              {{ t('games.coinFlip.heads') }}
             </BaseButton>
             <BaseButton
               type="button"
@@ -61,7 +61,7 @@
               :class="{ 'bg-green-600 text-white': selectedSide === 'tails' }"
               @click="selectedSide = 'tails'"
             >
-              Решка
+              {{ t('games.coinFlip.tails') }}
             </BaseButton>
           </div>
 
@@ -71,7 +71,7 @@
             class="text-white text-lg font-bold py-3 rounded-lg"
             :disabled="!isValid || gamesStore.loading || !selectedSide"
           >
-            {{ gamesStore.loading ? 'Загрузка...' : 'Играть' }}
+            {{ gamesStore.loading ? t('common.loading') : t('common.play') }}
           </BaseButton>
 
           <div v-if="gamesStore.error" class="text-red-500 text-sm text-center">
@@ -85,8 +85,8 @@
             <div class="text-xl">
               {{
                 lastResult.result === 'win'
-                  ? `Выигрыш: ${lastResult.win_amount} ₽`
-                  : 'Попробуйте еще раз!'
+                  ? `${t('games.youWon')}: ${lastResult.win_amount} ₽`
+                  : t('games.tryAgain')
               }}
             </div>
           </div>
@@ -99,9 +99,11 @@
         class="max-w-md mx-auto text-center p-6 rounded-lg shadow"
         style="background: var(--card-bg)"
       >
-        <h3 class="text-xl font-bold mb-2" style="color: var(--primary)">Демо-режим</h3>
+        <h3 class="text-xl font-bold mb-2" style="color: var(--primary)">
+          {{ t('games.demoMode') }}
+        </h3>
         <p class="mb-0 text-lg" style="color: var(--text-primary)">
-          Чтобы играть, нужно авторизоваться или зарегистрироваться
+          {{ t('games.loginToPlay') }}
         </p>
       </div>
     </div>
@@ -110,12 +112,14 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import BackButton from '@/components/BackButton.vue'
 import BaseInput from '@/components/BaseInput.vue'
 import BaseButton from '@/components/BaseButton.vue'
 import { useGamesStore } from '@/stores/games'
 import { useAuthStore } from '@/stores/auth'
 
+const { t } = useI18n()
 const gamesStore = useGamesStore()
 const authStore = useAuthStore()
 const bet = ref<string | number>('')
@@ -163,7 +167,7 @@ async function onPlay() {
       bet.value = '' // Очищаем поле ставки
       selectedSide.value = null // Сбрасываем выбор стороны
     } catch (error) {
-      console.error('Ошибка при игре:', error)
+      console.error(t('games.debug.playError'), error)
     }
   }
 }
@@ -178,10 +182,10 @@ async function initializeGame() {
       createdGameId.value = gameId
       await gamesStore.fetchGameById(gameId)
     } else {
-      console.error('Не найден ID игры для орла и решки')
+      console.error(t('games.coinFlip.debug.gameIdNotFound'))
     }
   } catch (e) {
-    console.error('Ошибка при инициализации игры:', e)
+    console.error(t('games.debug.initializeError'), e)
   }
 }
 
@@ -189,7 +193,7 @@ onMounted(async () => {
   try {
     await initializeGame()
   } catch (e) {
-    console.error('Ошибка при создании игры:', e)
+    console.error(t('games.debug.createError'), e)
   }
 })
 </script>

@@ -1,6 +1,6 @@
 <template>
   <div class="slot-vue-container">
-    <h2 class="title">Слоты (Vue)</h2>
+    <h2 class="title">{{ $t('slotMachinePure.title') }}</h2>
     <div class="slot-area">
       <div class="reels">
         <div v-for="(reel, i) in reels" :key="i" class="reel">
@@ -14,22 +14,32 @@
           </div>
         </div>
       </div>
-      <div class="jackpot">Jackpot: {{ jackpot.toLocaleString() }} ₽</div>
+      <div class="jackpot">{{ $t('jackpot.title') }}: {{ jackpot.toLocaleString() }} ₽</div>
     </div>
     <form @submit.prevent="onPlay" class="bet-form">
-      <input v-model="bet" type="number" min="1" :max="balance" placeholder="Ставка" required />
-      <button type="submit" :disabled="spinning || !isValid">Играть</button>
+      <input
+        v-model="bet"
+        type="number"
+        min="1"
+        :max="balance"
+        :placeholder="$t('games.bet')"
+        required
+      />
+      <button type="submit" :disabled="spinning || !isValid">{{ $t('common.play') }}</button>
     </form>
     <div class="result" v-if="lastResult">
-      <span v-if="lastResult.result === 'win'">🎉 Выигрыш: {{ lastResult.winAmount }} ₽</span>
-      <span v-else>😢 Попробуйте еще раз!</span>
+      <span v-if="lastResult.result === 'win'"
+        >🎉 {{ $t('games.youWon') }}: {{ lastResult.winAmount }} ₽</span
+      >
+      <span v-else>😢 {{ $t('games.tryAgain') }}</span>
     </div>
-    <div class="balance">Баланс: {{ balance }} ₽</div>
+    <div class="balance">{{ $t('common.balance') }}: {{ balance }} ₽</div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+
 
 const SYMBOLS = ['🍒', '🍋', '🔔', '⭐', '7️⃣', '🍀']
 const ROWS = 3

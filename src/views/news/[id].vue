@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-background w-full">
     <div v-if="newsStore.loading" class="flex justify-center items-center h-64">
-      <div class="text-lg">Загрузка новости...</div>
+      <div class="text-lg">{{ $t('news.loadingNews') }}</div>
     </div>
 
     <div v-else-if="newsStore.error" class="flex justify-center items-center h-64">
@@ -9,7 +9,7 @@
     </div>
 
     <div v-else-if="!newsItem" class="flex justify-center items-center h-64">
-      <div class="text-lg">Новость не найдена</div>
+      <div class="text-lg">{{ $t('news.newsNotFound') }}</div>
     </div>
 
     <div v-else class="flex flex-col md:flex-row gap-6 mt-8">

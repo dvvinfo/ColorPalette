@@ -32,13 +32,15 @@
         <!-- Requirements -->
         <div v-if="requirements" class="text-sm">
           <div v-if="requirements.deposit" class="mb-1">
-            Первый депозит от <span class="font-semibold">{{ requirements.deposit }}</span>
+            {{ $t('bonus.firstDepositFrom') }}
+            <span class="font-semibold">{{ requirements.deposit }}</span>
           </div>
           <div v-if="requirements.timer" class="mb-1">
-            До завершения <span class="font-semibold">{{ requirements.timer }}</span>
+            {{ $t('bonus.timeLeft') }} <span class="font-semibold">{{ requirements.timer }}</span>
           </div>
           <div v-if="requirements.minAmount" class="mb-1">
-            На сумму депозитов от <span class="font-semibold">{{ requirements.minAmount }}</span>
+            {{ $t('bonus.depositAmountFrom') }}
+            <span class="font-semibold">{{ requirements.minAmount }}</span>
           </div>
         </div>
       </div>
@@ -60,7 +62,7 @@
           <input
             v-model="promoCode"
             type="text"
-            placeholder="Промокод"
+            :placeholder="$t('bonus.promoCode')"
             class="flex-1 px-3 py-2 bg-white/20 rounded-lg border border-white/30 text-white placeholder-white/60 focus:outline-none focus:border-white/50"
             @click.stop
           />
@@ -71,7 +73,7 @@
           class="text-xs text-white/60 mt-2 hover:text-white/80"
           @click.stop="handleInvalidPromo"
         >
-          Неверный промокод
+          {{ $t('bonus.invalidPromoCode') }}
         </button>
       </div>
     </div>

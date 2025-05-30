@@ -10,9 +10,9 @@
       >
         &times;
       </button>
-      <h2 class="text-2xl font-bold mb-6 text-white">Уведомления</h2>
+      <h2 class="text-2xl font-bold mb-6 text-white">{{ $t('header.notifications') }}</h2>
       <div v-if="notifications.length === 0" class="text-gray-400 text-center py-8">
-        Нет новых уведомлений
+        {{ $t('notifications.noNotifications') }}
       </div>
       <div v-for="note in notifications" :key="note.id" class="mb-8 last:mb-0">
         <div class="flex justify-between items-center mb-2">
@@ -40,9 +40,9 @@
         </div>
       </div>
       <div class="flex justify-end items-center mt-8 text-sm">
-        <a href="#" class="text-primary underline" @click.prevent="$emit('clearAll')"
-          >Очистить все уведомления</a
-        >
+        <a href="#" class="text-primary underline" @click.prevent="$emit('clearAll')">{{
+          $t('notifications.clearAll')
+        }}</a>
       </div>
     </div>
   </div>

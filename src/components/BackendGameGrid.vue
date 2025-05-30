@@ -17,28 +17,28 @@
             d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
           />
         </svg>
-        Популярные игры
+        {{ $t('games.popularGames') }}
       </h2>
     </div>
 
     <!-- Loading State -->
     <div v-if="gamesStore.loading" class="text-center py-8">
       <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-      <p class="mt-4 text-white/60">Загрузка игр...</p>
+      <p class="mt-4 text-white/60">{{ $t('games.loadingGames') }}</p>
     </div>
 
     <!-- Error State -->
     <div v-else-if="gamesStore.error" class="text-center py-8">
       <p class="text-red-500">{{ gamesStore.error }}</p>
-      <p class="text-white/60 mt-2">Проверьте подключение к интернету и попробуйте снова</p>
+      <p class="text-white/60 mt-2">{{ $t('games.checkConnection') }}</p>
       <BaseButton variant="primary" class="mt-4" @click="gamesStore.fetchGames">
-        Попробовать снова
+        {{ $t('games.tryAgain') }}
       </BaseButton>
     </div>
 
     <!-- Empty State -->
     <div v-else-if="!gamesStore.games || gamesStore.games.length === 0" class="text-center py-8">
-      <p class="text-white/60">Игры не найдены</p>
+      <p class="text-white/60">{{ $t('games.gamesNotFound') }}</p>
     </div>
 
     <!-- Games Grid -->
@@ -75,8 +75,8 @@
           :to="`/games/${game.id}`"
           class="absolute inset-0 flex flex-col items-center justify-center rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 z-20"
         >
-          <BaseButton variant="primary" size="sm" class="mb-2">Играть</BaseButton>
-          <BaseButton variant="outline" size="sm">Демо</BaseButton>
+          <BaseButton variant="primary" size="sm" class="mb-2">{{ $t('common.play') }}</BaseButton>
+          <BaseButton variant="outline" size="sm">{{ $t('common.demo') }}</BaseButton>
         </router-link>
       </div>
     </div>

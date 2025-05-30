@@ -10,7 +10,7 @@
       >
         &times;
       </button>
-      <h2 class="text-2xl font-bold mb-6 text-white">Вход</h2>
+      <h2 class="text-2xl font-bold mb-6 text-white">{{ $t('auth.loginTitle') }}</h2>
       <Form
         :validation-schema="schema"
         @submit="onSubmit"
@@ -24,7 +24,7 @@
             <BaseInput
               v-bind="field"
               type="email"
-              placeholder="Email"
+              :placeholder="$t('auth.email')"
               required
               :error="!!errorMessage"
               :disabled="loading"
@@ -35,7 +35,7 @@
             <BaseInput
               v-bind="field"
               type="password"
-              placeholder="Пароль"
+              :placeholder="$t('auth.password')"
               required
               :error="!!errorMessage"
               :disabled="loading"
@@ -51,7 +51,7 @@
           :disabled="!meta.valid || loading"
           :loading="loading"
         >
-          {{ loading ? 'Вход...' : 'Войти' }}
+          {{ loading ? $t('common.loading') : $t('common.login') }}
         </BaseButton>
       </Form>
     </div>
@@ -64,16 +64,23 @@ import BaseButton from './BaseButton.vue'
 import { Form, Field } from 'vee-validate'
 import * as yup from 'yup'
 import { useAuthStore } from '@/stores/auth'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const authStore = useAuthStore()
 const loading = ref(false)
 const error = ref<string | null>(null)
 
-const schema = yup.object({
-  email: yup.string().email('Неверный формат email').required('Email обязателен'),
-  password: yup.string().min(5, 'Минимум 6 символов').required('Пароль обязателен'),
-})
+const schema = computed(() =>
+  yup.object({
+    email: yup.string().email(t('validation.invalidEmail')).required(t('validation.required')),
+    password: yup
+      .string()
+      .min(5, t('validation.minLength', { count: 5 }))
+      .required(t('validation.required')),
+  }),
+)
 
 async function onSubmit(values: Record<string, unknown>) {
   try {
@@ -85,10 +92,10 @@ async function onSubmit(values: Record<string, unknown>) {
         emit('close')
       }, 500)
     } else {
-      error.value = 'Неверный email или пароль'
+      error.value = t('auth.loginError')
     }
   } catch (err) {
-    error.value = err instanceof Error ? err.message : 'Произошла ошибка при входе'
+    error.value = err instanceof Error ? err.message : t('auth.loginError')
   } finally {
     loading.value = false
   }

@@ -4,7 +4,7 @@
       v-if="newsStore.loading"
       class="flex justify-center items-center h-[200px] md:h-[300px] bg-card-bg rounded-lg"
     >
-      <div class="text-lg">Загрузка новостей...</div>
+      <div class="text-lg">{{ $t('news.loadingNews') }}</div>
     </div>
 
     <div
@@ -39,7 +39,7 @@
             <div class="relative z-10 p-6 md:p-10 max-w-2xl">
               <div class="flex items-center gap-2 mb-2">
                 <!-- <span class="text-primary bg-white/20 px-2 py-1 rounded text-sm font-semibold">
-                  НОВОСТИ
+                  {{ $t('navigation.news').toUpperCase() }}
                 </span> -->
                 <span class="text-white/80 text-sm">{{ newsItem.date }}</span>
               </div>
@@ -51,7 +51,7 @@
                 @click.stop="navigateToNews(newsItem.id)"
                 class="bg-primary text-white px-6 py-3 rounded-md hover:bg-primary/80 transition-all font-semibold"
               >
-                Читать далее
+                {{ $t('news.readMore') }}
               </button>
             </div>
           </div>

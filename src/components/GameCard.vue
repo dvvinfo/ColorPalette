@@ -10,10 +10,12 @@
 
       <!-- Badge -->
       <div class="absolute top-2 left-2 z-10">
-        <span v-if="game.isHot" class="bg-primary text-white text-xs px-2 py-0.5 rounded">HOT</span>
-        <span v-else-if="game.isNew" class="bg-secondary text-white text-xs px-2 py-0.5 rounded"
-          >NEW</span
-        >
+        <span v-if="game.isHot" class="bg-primary text-white text-xs px-2 py-0.5 rounded">{{
+          $t('games.hot')
+        }}</span>
+        <span v-else-if="game.isNew" class="bg-secondary text-white text-xs px-2 py-0.5 rounded">{{
+          $t('games.new')
+        }}</span>
       </div>
     </div>
 
@@ -32,8 +34,8 @@
       :to="game.link"
       class="absolute inset-0 flex flex-col items-center justify-center rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 z-20"
     >
-      <BaseButton variant="primary" size="sm" class="mb-2">Играть</BaseButton>
-      <BaseButton variant="outline" size="sm">Демо</BaseButton>
+      <BaseButton variant="primary" size="sm" class="mb-2">{{ $t('common.play') }}</BaseButton>
+      <BaseButton variant="outline" size="sm">{{ $t('common.demo') }}</BaseButton>
     </router-link>
   </div>
 </template>

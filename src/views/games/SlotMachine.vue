@@ -3,7 +3,7 @@
     <div class="bg-card-bg rounded-lg p-6">
       <div class="flex items-center gap-4 mb-6">
         <BackButton />
-        <h1 class="text-2xl font-bold">Слоты</h1>
+        <h1 class="text-2xl font-bold">{{ t('slotMachine.title') }}</h1>
       </div>
 
       <!-- Игровое поле -->
@@ -26,7 +26,7 @@
             <BaseInput
               v-model="bet"
               type="text"
-              placeholder="Введите ставку"
+              :placeholder="t('games.enterBet')"
               class="pr-10"
               required
               @input="onBetInput"
@@ -53,7 +53,7 @@
             class="bg-red-600 hover:bg-red-700 text-white text-lg font-bold py-3 rounded-lg"
             :disabled="!isValid || gamesStore.loading || !isSlotReady"
           >
-            {{ gamesStore.loading ? 'Загрузка...' : 'Играть' }}
+            {{ gamesStore.loading ? t('common.loading') : t('common.play') }}
           </BaseButton>
 
           <div v-if="gamesStore.error" class="text-red-500 text-sm text-center">
@@ -67,8 +67,8 @@
             <div class="text-xl">
               {{
                 lastResult.result === 'win'
-                  ? `Выигрыш: ${lastResult.win_amount} ₽`
-                  : 'Попробуйте еще раз!'
+                  ? `${t('games.youWon')}: ${lastResult.win_amount} ₽`
+                  : t('games.tryAgain')
               }}
             </div>
           </div>
@@ -80,14 +80,14 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import BackButton from '@/components/BackButton.vue'
 import BaseInput from '@/components/BaseInput.vue'
 import BaseButton from '@/components/BaseButton.vue'
 import { useGamesStore } from '@/stores/games'
 import { useAuthStore } from '@/stores/auth'
 
-console.log('Компонент SlotMachine загружен')
-
+const { t } = useI18n()
 const gamesStore = useGamesStore()
 const authStore = useAuthStore()
 const bet = ref<string | number>('')
@@ -108,10 +108,10 @@ async function initializeGame() {
       createdGameId.value = gameId
       await gamesStore.fetchGameById(gameId)
     } else {
-      console.error('Не найден ID игры для слот машины')
+      console.error(t('games.slotMachine.debug.gameIdNotFound'))
     }
   } catch (e) {
-    console.error('Ошибка при инициализации игры:', e)
+    console.error(t('games.debug.initializeError'), e)
   }
 }
 
@@ -133,7 +133,7 @@ async function onPlay() {
       }
       bet.value = ''
     } catch (error) {
-      console.error('Ошибка при игре:', error)
+      console.error(t('games.debug.playError'), error)
     }
   }
 }

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import AuthModal from './components/AuthModal.vue'
 import RegisterModal from './components/RegisterModal.vue'
 import AppHeader from './components/AppHeader.vue'
@@ -8,65 +9,70 @@ import NotificationModal from './components/NotificationModal.vue'
 import AppFooter from './components/AppFooter.vue'
 import DepositModal from './components/DepositModal.vue'
 
+const { t } = useI18n()
 const showLoginModal = ref(false)
 const showRegisterModal = ref(false)
 const showMessages = ref(false)
 const showNotifications = ref(false)
 const showDeposit = ref(false)
 
-const messages = ref([
+// Переводимые сообщения и уведомления
+const messages = computed(() => [
   {
     id: 1,
-    title: 'Добро пожаловать!',
+    title: t('messages.welcome'),
     date: '20 мая 2025 10:46',
-    text: `Поздравляем с регистрацией в клубе! Впереди — вулкан удовольствий и крупных выигрышей!<br><br>Чтобы защитить свой аккаунт и получить доступ к <b>эксклюзивным бонусам</b> — подтвердите email, который вы указали при регистрации.<br><br>Письмо с ссылкой на подтверждение уже отправлено на вашу почту. Если письмо не пришло в течение 2 минут, пожалуйста, проверьте папку «Спам».`,
+    text: t('messages.welcomeText') + '<br><br>' + t('messages.confirmEmail'),
     read: false,
   },
 ])
 
-const notifications = ref([
+const notifications = computed(() => [
   {
     id: 1,
-    title: 'Бонус активирован!',
+    title: t('messages.bonusActivated'),
     date: '20 мая 2025 11:00',
     text: 'Вы успешно активировали бонус 10% на депозит.',
   },
   {
     id: 2,
-    title: 'Новая акция',
+    title: t('messages.newPromotion'),
     date: '19 мая 2025 18:30',
     text: 'Не пропустите новую акцию! Получите до 50 фриспинов.',
   },
 ])
 
+// Локальные изменяемые копии для удаления/изменения
+const localMessages = ref([...messages.value])
+const localNotifications = ref([...notifications.value])
+
 function deleteMessage(id: number) {
-  messages.value = messages.value.filter((m) => m.id !== id)
+  localMessages.value = localMessages.value.filter((m) => m.id !== id)
 }
+
 function deleteNotification(id: number) {
-  notifications.value = notifications.value.filter((n) => n.id !== id)
+  localNotifications.value = localNotifications.value.filter((n) => n.id !== id)
 }
 
 function markAllMessagesRead() {
-  messages.value = messages.value.map((m) => ({ ...m, read: true }))
+  localMessages.value = localMessages.value.map((m) => ({ ...m, read: true }))
 }
 
-// Синхронизация счетчиков в сторе
+// Синхронизация при изменении языка
 watch(
   messages,
-  (val) => {
-    // Обновляем только локальное состояние
-    messages.value = val
+  (newMessages) => {
+    localMessages.value = [...newMessages]
   },
-  { deep: true },
+  { immediate: true },
 )
 
 watch(
   notifications,
-  (val) => {
-    // Обновляем только локальное состояние
-    notifications.value = val
+  (newNotifications) => {
+    localNotifications.value = [...newNotifications]
   },
-  { deep: true },
+  { immediate: true },
 )
 </script>
 
@@ -90,17 +96,17 @@ watch(
     <RegisterModal v-if="showRegisterModal" @close="showRegisterModal = false" />
     <MessageModal
       v-if="showMessages"
-      :messages="messages"
+      :messages="localMessages"
       @close="showMessages = false"
       @delete="deleteMessage"
       @markAllRead="markAllMessagesRead"
     />
     <NotificationModal
       v-if="showNotifications"
-      :notifications="notifications"
+      :notifications="localNotifications"
       @close="showNotifications = false"
       @delete="deleteNotification"
-      @clearAll="notifications = []"
+      @clearAll="localNotifications = []"
     />
     <DepositModal v-if="showDeposit" @close="showDeposit = false" />
   </div>

@@ -1,11 +1,11 @@
 <template>
-  <div class="bg-card-bg rounded-2xl p-6 shadow-lg w-full  text-center">
+  <div class="bg-card-bg rounded-2xl p-6 shadow-lg w-full text-center">
     <div class="text-lg font-bold text-white mb-2">{{ title }}</div>
     <div class="text-3xl font-extrabold text-primary mb-4">{{ amount }}₽</div>
     <div v-if="timeLeft > 0" class="text-white text-sm mb-4">
-      До завершения: <span class="font-mono">{{ formattedTime }}</span>
+      {{ $t('bonus.timeLeft') }}: <span class="font-mono">{{ formattedTime }}</span>
     </div>
-    <BaseButton variant="primary" class="w-full">Активировать</BaseButton>
+    <BaseButton variant="primary" class="w-full">{{ $t('bonus.activate') }}</BaseButton>
   </div>
 </template>
 

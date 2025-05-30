@@ -3,7 +3,7 @@
     <div class="bg-card-bg rounded-lg p-6">
       <div class="flex items-center gap-4 mb-6">
         <BackButton />
-        <h1 class="text-2xl font-bold">Рулетка</h1>
+        <h1 class="text-2xl font-bold">{{ $t('navigation.roulette') }}</h1>
       </div>
 
       <!-- Игровое поле через iframe -->
@@ -26,7 +26,7 @@
             <BaseInput
               v-model="bet"
               type="text"
-              placeholder="Введите ставку"
+              :placeholder="$t('games.enterBet')"
               class="pr-10"
               required
               @input="onBetInput"
@@ -53,7 +53,7 @@
             class="text-white text-lg font-bold py-3 rounded-lg"
             :disabled="!isValid || gamesStore.loading"
           >
-            {{ gamesStore.loading ? 'Загрузка...' : 'Играть' }}
+            {{ gamesStore.loading ? $t('common.loading') : $t('common.play') }}
           </BaseButton>
 
           <div v-if="gamesStore.error" class="text-red-500 text-sm text-center">
@@ -67,8 +67,8 @@
             <div class="text-xl">
               {{
                 lastResult.result === 'win'
-                  ? `Поздравляем! Вы выиграли ${lastResult.win_amount} ₽`
-                  : 'К сожалению, вы проиграли. Попробуйте еще раз!'
+                  ? `${$t('games.congratulations')}! ${$t('games.youWon')} ${lastResult.win_amount} ₽`
+                  : $t('games.roulette.lostMessage')
               }}
             </div>
           </div>
@@ -81,9 +81,11 @@
         class="max-w-md mx-auto text-center p-6 rounded-lg shadow"
         style="background: var(--card-bg)"
       >
-        <h3 class="text-xl font-bold mb-2" style="color: var(--primary)">Демо-режим</h3>
+        <h3 class="text-xl font-bold mb-2" style="color: var(--primary)">
+          {{ $t('games.demoMode') }}
+        </h3>
         <p class="mb-0 text-lg" style="color: var(--text-primary)">
-          Чтобы играть, нужно авторизоваться или зарегистрироваться
+          {{ $t('games.loginToPlay') }}
         </p>
       </div>
     </div>
@@ -92,12 +94,14 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import BackButton from '@/components/BackButton.vue'
 import BaseInput from '@/components/BaseInput.vue'
 import BaseButton from '@/components/BaseButton.vue'
 import { useGamesStore } from '@/stores/games'
 import { useAuthStore } from '@/stores/auth'
 
+const { t } = useI18n()
 const gamesStore = useGamesStore()
 const authStore = useAuthStore()
 const bet = ref<string | number>('')
@@ -129,7 +133,7 @@ async function onPlay() {
       }
       bet.value = ''
     } catch (error) {
-      console.error('Ошибка при игре:', error)
+      console.error(t('games.debug.playError'), error)
     }
   }
 }
@@ -170,11 +174,11 @@ function handleRouletteResult(event: MessageEvent) {
         })
         authStore.fetchUser()
         console.log(
-          `Результат рулетки: ${result}, Выбранное число: ${selectedNumber}, Выпавшее число: ${winningNumber}, Выигрыш: ${winAmount}`,
+          `${t('games.roulette.debug.result')}: ${result}, ${t('games.roulette.debug.selectedNumber')}: ${selectedNumber}, ${t('games.roulette.debug.winningNumber')}: ${winningNumber}, ${t('games.roulette.debug.winAmount')}: ${winAmount}`,
         )
       }, 4000)
     } else {
-      console.error('ID игры не найден при обработке результата')
+      console.error(t('games.debug.gameIdNotFound'))
     }
   }
 }

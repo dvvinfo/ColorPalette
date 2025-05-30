@@ -1,14 +1,14 @@
 <template>
   <div class="news-carousel">
     <div class="flex items-center justify-between mb-4">
-      <h3 class="text-xl font-bold">Последние новости</h3>
+      <h3 class="text-xl font-bold">{{ $t('news.latestNews') }}</h3>
       <router-link to="/news" class="text-primary hover:text-primary/80 text-sm font-semibold">
-        Все новости →
+        {{ $t('news.allNews') }} →
       </router-link>
     </div>
 
     <div v-if="newsStore.loading" class="flex justify-center items-center h-32">
-      <div class="text-sm">Загрузка новостей...</div>
+      <div class="text-sm">{{ $t('news.loadingNews') }}</div>
     </div>
 
     <div v-else-if="newsStore.error" class="flex justify-center items-center h-32">
@@ -44,7 +44,7 @@
               <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
               <div class="absolute bottom-2 left-2">
                 <span class="text-primary bg-white/20 px-2 py-1 rounded text-xs font-semibold">
-                  НОВОСТИ
+                  {{ $t('navigation.news').toUpperCase() }}
                 </span>
               </div>
             </div>
@@ -56,7 +56,7 @@
                 {{ truncateDescription(newsItem.description, 80) }}
               </p>
               <button class="text-primary text-xs font-semibold mt-2 hover:text-primary/80">
-                Читать далее →
+                {{ $t('news.readMore') }} →
               </button>
             </div>
           </div>

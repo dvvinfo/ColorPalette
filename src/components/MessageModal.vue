@@ -10,12 +10,12 @@
       >
         &times;
       </button>
-      <h2 class="text-2xl font-bold mb-6 text-white">Входящие сообщения</h2>
+      <h2 class="text-2xl font-bold mb-6 text-white">{{ $t('header.messages') }}</h2>
       <div
         v-if="props.messages.length === 0 || unreadMessages.length === 0"
         class="text-gray-400 text-center py-8"
       >
-        Нет новых сообщений
+        {{ $t('messages.noNewMessages') }}
       </div>
       <div v-else>
         <div v-for="msg in unreadMessages" :key="msg.id" class="mb-8 last:mb-0">
@@ -43,9 +43,9 @@
         </div>
       </div>
       <div class="flex justify-between items-center mt-8 text-sm">
-        <a href="#" class="text-primary underline" @click.prevent="$emit('markAllRead')"
-          >Отметить все сообщения как прочитанные</a
-        >
+        <a href="#" class="text-primary underline" @click.prevent="$emit('markAllRead')">{{
+          $t('messages.markAllRead')
+        }}</a>
         <a href="#" class="text-gray-400 hover:text-primary flex items-center gap-1">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -61,7 +61,7 @@
               d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
             />
           </svg>
-          Включить push-уведомления
+          {{ $t('messages.enablePushNotifications') }}
         </a>
       </div>
     </div>

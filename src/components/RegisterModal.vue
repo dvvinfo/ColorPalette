@@ -10,7 +10,7 @@
       >
         &times;
       </button>
-      <h2 class="text-2xl font-bold mb-6 text-white">Регистрация</h2>
+      <h2 class="text-2xl font-bold mb-6 text-white">{{ $t('auth.registerTitle') }}</h2>
       <Form
         :validation-schema="schema"
         @submit="onSubmit"
@@ -24,7 +24,7 @@
             <BaseInput
               v-bind="field"
               type="email"
-              placeholder="Email"
+              :placeholder="$t('auth.email')"
               required
               :error="!!errorMessage"
             />
@@ -34,7 +34,7 @@
             <BaseInput
               v-bind="field"
               type="text"
-              placeholder="Имя пользователя"
+              :placeholder="$t('auth.username')"
               required
               :error="!!errorMessage"
             />
@@ -44,7 +44,7 @@
             <BaseInput
               v-bind="field"
               type="password"
-              placeholder="Пароль"
+              :placeholder="$t('auth.password')"
               required
               :error="!!errorMessage"
             />
@@ -54,7 +54,7 @@
             <BaseInput
               v-bind="field"
               type="password"
-              placeholder="Подтвердите пароль"
+              :placeholder="$t('auth.confirmPassword')"
               required
               :error="!!errorMessage"
               :disabled="loading"
@@ -70,7 +70,7 @@
           :disabled="!meta.valid || loading"
           :loading="loading"
         >
-          {{ loading ? 'Регистрация...' : 'Зарегистрироваться' }}
+          {{ loading ? $t('common.loading') : $t('common.register') }}
         </BaseButton>
       </Form>
     </div>
@@ -83,30 +83,34 @@ import BaseButton from './BaseButton.vue'
 import { Form, Field } from 'vee-validate'
 import * as yup from 'yup'
 import { useAuthStore } from '@/stores/auth'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const authStore = useAuthStore()
 const loading = ref(false)
 const error = ref<string | null>(null)
 
-const schema = yup.object({
-  email: yup.string().email('Введите корректный email').required('Email обязателен'),
-  username: yup
-    .string()
-    .min(3, 'Минимум 3 символа')
-    .max(20, 'Максимум 20 символов')
-    .required('Имя пользователя обязательно'),
-  password: yup
-    .string()
-    .min(5, 'Минимум 5 символов')
-    .matches(/[A-Z]/, 'Пароль должен содержать хотя бы одну заглавную букву')
-    .matches(/[0-9]/, 'Пароль должен содержать хотя бы одну цифру')
-    .required('Пароль обязателен'),
-  confirmPassword: yup
-    .string()
-    .oneOf([yup.ref('password')], 'Пароли должны совпадать')
-    .required('Подтверждение пароля обязательно'),
-})
+const schema = computed(() =>
+  yup.object({
+    email: yup.string().email(t('validation.invalidEmail')).required(t('validation.required')),
+    username: yup
+      .string()
+      .min(3, t('validation.minLength', { count: 3 }))
+      .max(20, t('validation.maxLength', { count: 20 }))
+      .required(t('validation.required')),
+    password: yup
+      .string()
+      .min(5, t('validation.minLength', { count: 5 }))
+      .matches(/[A-Z]/, t('validation.passwordMustContain') + ' ' + t('validation.uppercase'))
+      .matches(/[0-9]/, t('validation.passwordMustContain') + ' ' + t('validation.number'))
+      .required(t('validation.required')),
+    confirmPassword: yup
+      .string()
+      .oneOf([yup.ref('password')], t('validation.passwordsMatch'))
+      .required(t('validation.required')),
+  }),
+)
 
 async function onSubmit(values: Record<string, unknown>) {
   try {
@@ -122,10 +126,10 @@ async function onSubmit(values: Record<string, unknown>) {
         emit('close')
       }, 500)
     } else {
-      error.value = 'Ошибка при регистрации'
+      error.value = t('auth.registerError')
     }
   } catch (err) {
-    error.value = err instanceof Error ? err.message : 'Произошла ошибка при регистрации'
+    error.value = err instanceof Error ? err.message : t('auth.registerError')
   } finally {
     loading.value = false
   }

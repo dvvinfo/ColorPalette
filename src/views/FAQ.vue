@@ -7,9 +7,9 @@
 
         <!-- FAQ Header -->
         <div class="mb-8">
-          <h1 class="text-3xl font-bold text-text-primary mb-4">Часто задаваемые вопросы</h1>
+          <h1 class="text-3xl font-bold text-text-primary mb-4">{{ $t('faq.title') }}</h1>
           <p class="text-text-secondary text-lg">
-            Здесь вы найдете ответы на самые популярные вопросы о нашем казино
+            {{ $t('faq.description') }}
           </p>
         </div>
 
@@ -19,7 +19,7 @@
             <input
               v-model="searchQuery"
               type="text"
-              placeholder="Поиск по FAQ..."
+              :placeholder="$t('faq.searchPlaceholder')"
               class="w-full px-4 py-3 pl-12 bg-card-bg rounded-lg focus:outline-none focus:border-primary transition-colors"
             />
             <svg
@@ -48,7 +48,7 @@
               :variant="selectedCategory === category.id ? 'primary' : 'outline'"
               size="sm"
             >
-              {{ category.name }}
+              {{ $t(category.nameKey) }}
             </BaseButton>
           </div>
         </div>
@@ -59,14 +59,14 @@
         <!-- Contact Support -->
         <div class="mt-12 p-6 bg-card-bg rounded-lg">
           <h3 class="text-xl font-semibold text-text-primary mb-3">
-            Не нашли ответ на свой вопрос?
+            {{ $t('faq.noAnswer') }}
           </h3>
           <p class="text-text-secondary mb-4">
-            Наша служба поддержки работает круглосуточно и готова помочь вам
+            {{ $t('faq.supportDescription') }}
           </p>
           <div class="flex flex-col sm:flex-row gap-4">
-            <BaseButton variant="primary" size="lg"> Связаться с поддержкой </BaseButton>
-            <BaseButton variant="outline" size="lg"> Написать в чат </BaseButton>
+            <BaseButton variant="primary" size="lg"> {{ $t('faq.contactSupport') }} </BaseButton>
+            <BaseButton variant="outline" size="lg"> {{ $t('faq.writeToChat') }} </BaseButton>
           </div>
         </div>
       </div>
@@ -82,13 +82,15 @@ import Accordion from '@/components/AppAccordion.vue'
 import RightSidebar from '@/components/RightSidebar.vue'
 import BaseButton from '@/components/BaseButton.vue'
 import BackButton from '@/components/BackButton.vue'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const searchQuery = ref('')
 const selectedCategory = ref('all')
 
 interface Category {
   id: string
-  name: string
+  nameKey: string
 }
 
 interface FaqItem {
@@ -98,79 +100,69 @@ interface FaqItem {
 }
 
 const categories: Category[] = [
-  { id: 'all', name: 'Все' },
-  { id: 'account', name: 'Аккаунт' },
-  { id: 'games', name: 'Игры' },
-  { id: 'payments', name: 'Платежи' },
-  { id: 'bonuses', name: 'Бонусы' },
-  { id: 'security', name: 'Безопасность' },
+  { id: 'all', nameKey: 'faq.categories.all' },
+  { id: 'account', nameKey: 'faq.categories.account' },
+  { id: 'games', nameKey: 'faq.categories.games' },
+  { id: 'payments', nameKey: 'faq.categories.payments' },
+  { id: 'bonuses', nameKey: 'faq.categories.bonuses' },
+  { id: 'security', nameKey: 'faq.categories.security' },
 ]
 
-const faqItems: FaqItem[] = [
+const faqItems = computed((): FaqItem[] => [
   {
-    question: 'Как создать аккаунт в казино?',
-    answer:
-      'Для создания аккаунта нажмите на кнопку "Регистрация" в правом верхнем углу сайта. Заполните все необходимые поля: email, пароль, имя и фамилию. После этого подтвердите свой email адрес, перейдя по ссылке в письме.',
+    question: t('faq.items.createAccount.question'),
+    answer: t('faq.items.createAccount.answer'),
     category: 'account',
   },
   {
-    question: 'Как пополнить счет?',
-    answer:
-      'Пополнить счет можно несколькими способами: банковской картой (Visa/Mastercard), электронными кошельками (Qiwi, WebMoney, ЮMoney), банковским переводом или криптовалютой. Минимальная сумма пополнения составляет 100 рублей.',
+    question: t('faq.items.deposit.question'),
+    answer: t('faq.items.deposit.answer'),
     category: 'payments',
   },
   {
-    question: 'Как вывести выигрыш?',
-    answer:
-      'Для вывода средств перейдите в раздел "Касса" и выберите "Вывод средств". Укажите сумму и способ вывода. Обработка заявки занимает от нескольких минут до 24 часов в зависимости от способа вывода.',
+    question: t('faq.items.withdraw.question'),
+    answer: t('faq.items.withdraw.answer'),
     category: 'payments',
   },
   {
-    question: 'Какие игры доступны в казино?',
-    answer:
-      'В нашем казино доступны: слоты от ведущих провайдеров, настольные игры (рулетка, блэкджек, покер), live-казино с реальными дилерами, спортивные ставки и эксклюзивные игры.',
+    question: t('faq.items.games.question'),
+    answer: t('faq.items.games.answer'),
     category: 'games',
   },
   {
-    question: 'Как получить приветственный бонус?',
-    answer:
-      'Приветственный бонус начисляется автоматически после первого пополнения счета на сумму от 1000 рублей. Бонус составляет 100% от суммы депозита + 100 фриспинов в слоте Book of Ra.',
+    question: t('faq.items.welcomeBonus.question'),
+    answer: t('faq.items.welcomeBonus.answer'),
     category: 'bonuses',
   },
   {
-    question: 'Что такое вейджер?',
-    answer:
-      'Вейджер (отыгрыш) - это условие, которое необходимо выполнить для вывода бонусных средств. Например, если вейджер x35, то нужно поставить сумму в 35 раз больше полученного бонуса.',
+    question: t('faq.items.wagering.question'),
+    answer: t('faq.items.wagering.answer'),
     category: 'bonuses',
   },
   {
-    question: 'Безопасно ли играть в вашем казино?',
-    answer:
-      'Да, наше казино имеет лицензию и использует современные технологии шифрования SSL для защиты ваших данных. Все игры сертифицированы и используют генератор случайных чисел.',
+    question: t('faq.items.security.question'),
+    answer: t('faq.items.security.answer'),
     category: 'security',
   },
   {
-    question: 'Как восстановить пароль?',
-    answer:
-      'Нажмите на "Забыли пароль?" на странице входа, введите ваш email. На почту придет письмо с инструкциями по восстановлению пароля.',
+    question: t('faq.items.resetPassword.question'),
+    answer: t('faq.items.resetPassword.answer'),
     category: 'account',
   },
   {
-    question: 'Можно ли играть с мобильного устройства?',
-    answer:
-      'Да, наш сайт полностью адаптирован для мобильных устройств. Также доступно мобильное приложение для iOS и Android.',
+    question: t('faq.items.mobile.question'),
+    answer: t('faq.items.mobile.answer'),
     category: 'games',
   },
   {
-    question: 'Какие лимиты на вывод средств?',
-    answer:
-      'Минимальная сумма вывода - 300 рублей. Максимальная сумма зависит от VIP статуса: обычные игроки - 100,000 руб/день, VIP игроки - без лимитов.',
+    question: t('faq.items.withdrawLimits.question'),
+    answer: t('faq.items.withdrawLimits.answer'),
     category: 'payments',
   },
-]
+])
 
 const filteredFaqItems = computed(() => {
-  let filtered = faqItems
+  let filtered = faqItems.value
 
   // Фильтр по категории
   if (selectedCategory.value !== 'all') {

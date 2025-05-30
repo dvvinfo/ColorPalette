@@ -11,7 +11,7 @@
         &times;
       </button>
       <BaseTabs v-model="activeTab" :tabs="tabs" />
-      <div v-if="activeTab === 'Пополнение счета'">
+      <div v-if="activeTab === $t('deposit.depositTitle')">
         <form
           @submit.prevent="onSubmit"
           class="flex flex-col items-center gap-6 mt-8 max-w-lg mx-auto"
@@ -20,7 +20,7 @@
             <BaseInput
               v-model="amount"
               type="text"
-              placeholder="Введите сумму"
+              :placeholder="$t('deposit.amount')"
               class="pr-10"
               required
               @input="onAmountInput"
@@ -45,7 +45,7 @@
             class="bg-red-600 hover:bg-red-700 text-white text-lg font-bold py-3 rounded-lg"
             :disabled="!isValid || balanceStore.loading"
           >
-            {{ balanceStore.loading ? 'Загрузка...' : 'Оплатить' }}
+            {{ balanceStore.loading ? $t('common.loading') : $t('footer.payment') }}
           </BaseButton>
           <div v-if="successMessage" class="text-green-500 text-sm mt-2">
             {{ successMessage }}
@@ -55,7 +55,7 @@
           </div>
         </form>
       </div>
-      <div v-else-if="activeTab === 'Получить выигрыш'">
+      <div v-else-if="activeTab === $t('deposit.withdrawTitle')">
         <form
           @submit.prevent="onWithdraw"
           class="flex flex-col items-center gap-6 mt-8 max-w-lg mx-auto"
@@ -64,7 +64,7 @@
             <BaseInput
               v-model="withdrawAmount"
               type="text"
-              placeholder="Введите сумму"
+              :placeholder="$t('deposit.amount')"
               class="pr-10"
               required
               @input="onWithdrawInput"
@@ -89,7 +89,7 @@
             class="bg-red-600 hover:bg-red-700 text-white text-lg font-bold py-3 rounded-lg"
             :disabled="!isWithdrawValid || balanceStore.loading"
           >
-            {{ balanceStore.loading ? 'Загрузка...' : 'Вывести' }}
+            {{ balanceStore.loading ? $t('common.loading') : $t('common.withdraw') }}
           </BaseButton>
           <div v-if="withdrawSuccessMessage" class="text-green-500 text-sm mt-2">
             {{ withdrawSuccessMessage }}
@@ -99,8 +99,8 @@
           </div>
         </form>
       </div>
-      <div v-else-if="activeTab === 'История операций'">
-        <div class="text-center text-white py-12">Здесь будет история операций</div>
+      <div v-else-if="activeTab === $t('deposit.operationHistory')">
+        <div class="text-center text-white py-12">{{ $t('deposit.operationHistoryText') }}</div>
       </div>
     </div>
   </div>
@@ -108,14 +108,22 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import BaseTabs from '@/components/BaseTabs.vue'
 import BaseInput from '@/components/BaseInput.vue'
 import BaseButton from '@/components/BaseButton.vue'
 import { useBalanceStore } from '@/stores/balance'
 import { useAuthStore } from '@/stores/auth'
 
-const tabs = ['Пополнение счета', 'Получить выигрыш', 'История операций']
-const activeTab = ref(tabs[0])
+const { t } = useI18n()
+
+const tabs = computed(() => [
+  t('deposit.depositTitle'),
+  t('deposit.withdrawTitle'),
+  t('deposit.operationHistory'),
+])
+
+const activeTab = ref(t('deposit.depositTitle'))
 const amount = ref<string | number>('')
 const withdrawAmount = ref<string | number>('')
 const presets = [1000, 5000, 7500, 10000]
@@ -150,10 +158,10 @@ async function onSubmit() {
     try {
       await balanceStore.deposit(num, 'default')
       await authStore.fetchUser()
-      successMessage.value = `Успешно пополнено на сумму ${num.toLocaleString()} ₽`
+      successMessage.value = `${t('deposit.depositSuccess')} ${num.toLocaleString()} ₽`
       amount.value = ''
     } catch (error) {
-      console.error('Ошибка при пополнении:', error)
+      console.error(t('deposit.debug.depositError'), error)
     }
   }
 }
@@ -164,10 +172,10 @@ async function onWithdraw() {
     try {
       await balanceStore.withdraw(num, 'default')
       await authStore.fetchUser()
-      withdrawSuccessMessage.value = `Успешно выведено ${num.toLocaleString()} ₽`
+      withdrawSuccessMessage.value = `${t('deposit.withdrawSuccess')} ${num.toLocaleString()} ₽`
       withdrawAmount.value = ''
     } catch (error) {
-      console.error('Ошибка при выводе:', error)
+      console.error(t('deposit.debug.withdrawError'), error)
     }
   }
 }

@@ -15,7 +15,7 @@
           d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"
         />
       </svg>
-      Какая то промоакция
+      {{ $t('promotions.specialOffer') }}
     </h2>
 
     <div class="p-4">
@@ -36,13 +36,13 @@
 
         <div class="absolute inset-0 flex flex-col items-center justify-between py-4">
           <div>
-            <p class="text-center text-white font-bold">Поиграй!</p>
+            <p class="text-center text-white font-bold">{{ $t('promotions.playNow') }}</p>
           </div>
           <div class="w-full px-4">
             <p class="text-center text-white/80 text-sm mb-3">
-              Получите 50000₽ на депозит и шанс выиграть главный приз
+              {{ $t('promotions.offerDescription') }}
             </p>
-            <BaseButton variant="primary" fullWidth>Начать игру</BaseButton>
+            <BaseButton variant="primary" fullWidth>{{ $t('promotions.startGame') }}</BaseButton>
           </div>
         </div>
       </div>

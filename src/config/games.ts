@@ -1,64 +1,73 @@
+import { useI18n } from 'vue-i18n'
+
 export interface GameConfig {
   id: number
-  name: string
+  nameKey: string
   chance: number
   rtp: number
   route: string
 }
 
+// Функция для получения названия игры с переводом
+export function getGameName(route: string): string {
+  const { t } = useI18n()
+  return t(`navigation.${route}`)
+}
+
+// Статическое использование для случаев, когда нужна базовая конфигурация
 export const GAME_CONFIGS: GameConfig[] = [
   {
     id: 1,
-    name: 'Рулетка',
+    nameKey: 'navigation.roulette',
     chance: 0.1,
     rtp: 15,
     route: 'roulette',
   },
   {
     id: 2,
-    name: 'Слоты',
+    nameKey: 'navigation.slots',
     chance: 0.1,
     rtp: 15,
     route: 'slots',
   },
   {
     id: 3,
-    name: 'Блэкджек',
+    nameKey: 'navigation.blackjack',
     chance: 0.1,
     rtp: 15,
     route: 'blackjack',
   },
   {
     id: 4,
-    name: 'Колесо Фортуны',
+    nameKey: 'navigation.wheel',
     chance: 0.1,
     rtp: 15,
     route: 'wheel',
   },
   {
     id: 5,
-    name: 'Кости',
+    nameKey: 'navigation.dice',
     chance: 0.1,
     rtp: 15,
     route: 'dice',
   },
   {
     id: 6,
-    name: 'Краш',
+    nameKey: 'navigation.crash',
     chance: 0.1,
     rtp: 15,
     route: 'crash',
   },
   {
     id: 7,
-    name: 'Орёл и Решка',
+    nameKey: 'navigation.coinFlip',
     chance: 0.1,
     rtp: 15,
     route: 'coin-flip',
   },
   {
     id: 8,
-    name: 'Слот машина',
+    nameKey: 'navigation.slotMachine',
     chance: 0.1,
     rtp: 15,
     route: 'slot-machine',

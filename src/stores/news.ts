@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 // Интерфейс для новости
 export interface NewsItem {
@@ -12,56 +13,53 @@ export interface NewsItem {
 }
 
 export const useNewsStore = defineStore('news', () => {
+  const { t } = useI18n()
+
   // Состояние
   const news = ref<NewsItem[]>([])
   const loading = ref(false)
   const error = ref('')
 
-  // Моковые данные
-  const mockNewsData: NewsItem[] = [
+  // Моковые данные с переводами
+  const getMockNewsData = (): NewsItem[] => [
     {
       id: 1,
-      title: 'Бонусы и акции',
-      description:
-        'Уже скоро начнется грандиозный розыгрыш призов. Участвуйте в розыгрыше и выигрывайте призы! Не упустите свой шанс стать победителем и получить крупный выигрыш.',
+      title: t('news.mockData.bonuses.title'),
+      description: t('news.mockData.bonuses.description'),
       image: '/images/banners/1502x444_newsweb-4.webp',
-      date: '20 мая 2025',
+      date: t('news.mockData.bonuses.date'),
       link: '/news/1',
     },
     {
       id: 2,
-      title: 'Новые игры',
-      description:
-        'Познакомьтесь с новыми захватывающими играми в нашем казино. Попробуйте свою удачу в слотах с прогрессивными джекпотами и уникальными бонусными раундами.',
+      title: t('news.mockData.newGames.title'),
+      description: t('news.mockData.newGames.description'),
       image: '/images/banners/playstation-g5038a4164_1280.jpg',
-      date: '18 мая 2025',
+      date: t('news.mockData.newGames.date'),
       link: '/news/2',
     },
     {
       id: 3,
-      title: 'Турнир по слотам',
-      description:
-        'Участвуйте в еженедельном турнире по слотам и выигрывайте крупные призы! Соревнуйтесь с другими игроками за звание лучшего и получите эксклюзивные награды.',
+      title: t('news.mockData.tournament.title'),
+      description: t('news.mockData.tournament.description'),
       image: '/images/banners/1502x444_newsweb-4.webp',
-      date: '15 мая 2025',
+      date: t('news.mockData.tournament.date'),
       link: '/news/3',
     },
     {
       id: 4,
-      title: 'Обновление платформы',
-      description:
-        'Мы улучшили нашу платформу для более комфортной игры. Узнайте о новых функциях, улучшенном интерфейсе и повышенной безопасности вашего аккаунта.',
+      title: t('news.mockData.platformUpdate.title'),
+      description: t('news.mockData.platformUpdate.description'),
       image: '/images/banners/playstation-g5038a4164_1280.jpg',
-      date: '12 мая 2025',
+      date: t('news.mockData.platformUpdate.date'),
       link: '/news/4',
     },
     {
       id: 5,
-      title: 'Программа лояльности',
-      description:
-        'Новая программа лояльности с еще большими преимуществами для наших постоянных игроков. Получайте очки за каждую игру и обменивайте их на ценные призы.',
+      title: t('news.mockData.loyalty.title'),
+      description: t('news.mockData.loyalty.description'),
       image: '/images/banners/1502x444_newsweb-4.webp',
-      date: '10 мая 2025',
+      date: t('news.mockData.loyalty.date'),
       link: '/news/5',
     },
   ]
@@ -85,12 +83,12 @@ export const useNewsStore = defineStore('news', () => {
 
       // Эмуляция случайной ошибки (5% вероятность)
       if (Math.random() < 0.05) {
-        throw new Error('Ошибка загрузки новостей')
+        throw new Error(t('news.errors.loadingError'))
       }
 
-      news.value = [...mockNewsData]
+      news.value = [...getMockNewsData()]
     } catch (err) {
-      error.value = err instanceof Error ? err.message : 'Произошла ошибка при загрузке новостей'
+      error.value = err instanceof Error ? err.message : t('news.errors.generalError')
     } finally {
       loading.value = false
     }
@@ -106,14 +104,15 @@ export const useNewsStore = defineStore('news', () => {
 
       // Эмуляция случайной ошибки (5% вероятность)
       if (Math.random() < 0.05) {
-        throw new Error('Ошибка загрузки новости')
+        throw new Error(t('news.errors.loadingError'))
       }
 
       const numId = typeof id === 'string' ? parseInt(id) : id
+      const mockNewsData = getMockNewsData()
       const newsItem = mockNewsData.find((item) => item.id === numId)
 
       if (!newsItem) {
-        throw new Error('Новость не найдена')
+        throw new Error(t('news.newsNotFound'))
       }
 
       // Если новости еще не загружены, загружаем все
@@ -123,7 +122,7 @@ export const useNewsStore = defineStore('news', () => {
 
       return newsItem
     } catch (err) {
-      error.value = err instanceof Error ? err.message : 'Произошла ошибка при загрузке новости'
+      error.value = err instanceof Error ? err.message : t('news.errors.generalError')
       throw err
     } finally {
       loading.value = false
