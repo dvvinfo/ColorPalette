@@ -108,6 +108,7 @@ import BaseInput from '@/components/BaseInput.vue'
 import BaseButton from '@/components/BaseButton.vue'
 import { useGamesStore } from '@/stores/games'
 import { useAuthStore } from '@/stores/auth'
+import { getGameConfigByRoute } from '@/config/games'
 
 const { t } = useI18n()
 const gamesStore = useGamesStore()
@@ -123,11 +124,11 @@ const gameUrl = computed(() => `${window.location.origin}/games/Black-Jack-Game-
 async function initializeGame() {
   gamesStore.lastPlayResult = null // Сбросить результат при входе в игру
   try {
-    // Используем фиксированный ID для блэкджека
-    const gameId = gamesStore.getGameIdByRoute('blackjack')
-    if (gameId) {
-      createdGameId.value = gameId
-      await gamesStore.fetchGameById(gameId)
+    // Используем прямой импорт функции вместо метода store
+    const gameConfig = getGameConfigByRoute('blackjack')
+    if (gameConfig) {
+      createdGameId.value = gameConfig.id
+      await gamesStore.fetchGameById(gameConfig.id)
     } else {
       console.error(t('games.blackjack.debug.gameIdNotFound'))
     }

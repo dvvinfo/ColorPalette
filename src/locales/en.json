@@ -60,7 +60,8 @@
     "promotions": "Promotions",
     "tournaments": "Tournaments",
     "news": "News",
-    "support": "Support"
+    "support": "Support",
+    "about": "About"
   },
   "games": {
     "allGames": "All Games",
@@ -307,8 +308,40 @@
     }
   },
   "about": {
-    "title": "Casino — Gambling tradition tested by time",
-    "description": "Have you heard about casino? About this famous, huge and magnificent gambling network, renowned for the best slots, biggest jackpots, excellent service and individual approach to each player. Do you know that the history of this establishment began many years ago, in times when gambling halls with slot machines were located on almost every street? The choice of such establishments was huge then, but not every one of them could boast of proper level, not to mention honesty. The online version of the famous casino continues the glorious tradition."
+    "title": "About Us",
+    "heroDescription": "We create the best gaming experience by combining modern technology with classic casino games",
+    "aboutUs": "About Our Company",
+    "description": "Our casino is a modern gaming platform that offers a wide selection of gambling games and entertainment. We strive to provide a safe, fair and exciting gaming environment for all our users.",
+    "experience": "With years of experience in the gambling industry, we understand player needs and constantly improve our services. Our team of professionals works to ensure every player has an unforgettable experience.",
+    "mission": "Our Mission",
+    "missionText": "To provide players with a safe, fair and exciting gaming environment with the best games and first-class customer service.",
+    "vision": "Our Vision",
+    "visionText": "To become the leading gaming platform that sets standards for quality and innovation in the online casino industry.",
+    "whyChooseUs": "Why Choose Us",
+    "security": "Security",
+    "securityText": "We use modern encryption and data protection technologies to ensure the security of your funds and personal information.",
+    "performance": "Performance",
+    "performanceText": "Our platform works fast and stable, providing smooth gameplay without delays and failures.",
+    "design": "Design",
+    "designText": "Modern and intuitive interface adapted for all devices — from mobile to desktop computers.",
+    "ourNumbers": "Our Achievements",
+    "happyUsers": "Happy Players",
+    "games": "Games",
+    "support": "Support",
+    "uptime": "Uptime",
+    "ourTeam": "Our Team",
+    "ceo": "Chief Executive Officer",
+    "ceoDescription": "Experienced leader with 15 years of experience in gambling and technology industry.",
+    "cto": "Chief Technology Officer",
+    "ctoDescription": "Expert in developing gaming platforms and security systems.",
+    "leadDeveloper": "Lead Developer",
+    "leadDeveloperDescription": "Frontend and backend development specialist with focus on user experience.",
+    "contactUs": "Contact Us",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "addressText": "Moscow, Tverskaya str., 123, office 456",
+    "followUs": "Follow Us"
   },
   "terms": {
     "content": "Here will be the content of the terms and conditions of use of our casino."

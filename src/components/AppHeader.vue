@@ -9,13 +9,13 @@
       </div>
 
       <!-- Профиль пользователя или кнопки авторизации -->
-      <div class="flex items-center gap-4">
+      <div class="flex md:items-center  gap-4">
         <!-- Переключатель языка -->
         <LanguageSwitcher />
 
         <div
           v-if="authStore.isAuthenticated && authStore.user"
-          class="flex items-center gap-6 flex-col sm:flex-row"
+          class="flex  items-center sm:gap-6 gap-4 flex-wrap"
         >
           <!-- Информация о пользователе -->
           <div class="flex items-center gap-6">
