@@ -1,16 +1,25 @@
 <template>
   <button
-    :disabled="props.disabled"
+    :disabled="props.disabled || props.loading"
     :class="[
-      'transition-all rounded-md',
+      'transition-all rounded-md relative',
       variantClasses[props.variant || 'primary'],
       sizeClasses[props.size || 'md'],
       { 'w-full': props.fullWidth },
-      { 'opacity-50 cursor-not-allowed': props.disabled },
+      { 'opacity-50 cursor-not-allowed': props.disabled || props.loading },
     ]"
     v-bind="$attrs"
   >
-    <slot></slot>
+    <span :class="{ 'opacity-0': props.loading }">
+      <slot></slot>
+    </span>
+
+    <!-- Loading spinner -->
+    <div v-if="props.loading" class="absolute inset-0 flex items-center justify-center">
+      <div
+        class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"
+      ></div>
+    </div>
   </button>
 </template>
 
@@ -20,6 +29,7 @@ const props = defineProps<{
   size?: 'sm' | 'md' | 'lg'
   fullWidth?: boolean
   disabled?: boolean
+  loading?: boolean
 }>()
 
 const variantClasses = {

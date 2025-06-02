@@ -35,6 +35,6 @@ const emit = defineEmits(['update:modelValue'])
 
 <style scoped>
 .base-input {
-  @apply w-full rounded-lg px-4 py-3 bg-white/90 text-black placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-primary transition;
+  @apply w-full rounded-lg px-3 py-2 bg-white/90 text-black placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-primary transition;
 }
 </style>

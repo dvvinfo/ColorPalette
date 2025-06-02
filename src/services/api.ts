@@ -8,6 +8,7 @@ import type {
   BonusCreateRequest,
   BonusActivateRequest,
   BonusResponse,
+  BetHistoryResponse,
 } from '@/types'
 
 // const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
@@ -146,6 +147,10 @@ export const userApi = {
 
   setUserBalance: (userId: number, amount: number) =>
     api.put<StatusResponse>(`/api/user/${userId}/balance`, { amount }),
+
+  // GET /user/history - получить историю ставок пользователя
+  getBetHistory: (page: number = 1) =>
+    api.get<BetHistoryResponse>(`/api/user/history?page=${page}`),
 }
 
 export const balanceApi = {

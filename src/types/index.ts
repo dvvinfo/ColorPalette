@@ -101,3 +101,26 @@ export interface BonusActivateRequest {
 export interface BonusResponse {
   message: string
 }
+
+// Bet History types
+export interface BetHistoryGame {
+  id: number
+  name: string
+}
+
+export interface BetHistoryRecord {
+  id: number
+  game_id: number
+  user_id: number
+  bet: number
+  win_ammount: number
+  result: 'win' | 'lose'
+  created_at: string
+  game: BetHistoryGame
+}
+
+export interface BetHistoryResponse {
+  pages: number
+  page: number
+  data: BetHistoryRecord[]
+}
