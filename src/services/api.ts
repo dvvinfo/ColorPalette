@@ -1,7 +1,14 @@
 import axios from 'axios'
 import type { AxiosResponse, AxiosError, InternalAxiosRequestConfig } from 'axios'
 import Cookies from 'js-cookie'
-import type { UserNotification, NotificationCreateRequest } from '@/types'
+import type {
+  UserNotification,
+  NotificationCreateRequest,
+  Bonus,
+  BonusCreateRequest,
+  BonusActivateRequest,
+  BonusResponse,
+} from '@/types'
 
 // const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 
@@ -99,6 +106,11 @@ export interface StatusResponse {
   message: string
 }
 
+// Расширенный интерфейс для конфигурации с полем _retry
+interface RetryableAxiosRequestConfig extends InternalAxiosRequestConfig {
+  _retry?: boolean
+}
+
 // API методы
 export const authApi = {
   register: (data: { username: string; email: string; password: string }) =>
@@ -186,6 +198,39 @@ export const notificationApi = {
   deleteAll: () => api.delete<StatusResponse>('/api/notification/all'),
 }
 
+export const bonusApi = {
+  // GET /bonus/ - получить список бонусов
+  getAll: () => api.get<Bonus[]>('/api/bonus/'),
+
+  // POST /bonus/ - создать бонус
+  create: (data: BonusCreateRequest) => api.post<BonusResponse>('/api/bonus/', data),
+
+  // DELETE /bonus/{id} - удалить бонус
+  delete: (id: number) => api.delete<BonusResponse>(`/api/bonus/${id}`),
+
+  // POST /bonus/activate - активировать бонус по промокоду
+  activate: (data: BonusActivateRequest) => api.post<BonusResponse>('/api/bonus/activate', data),
+}
+
+// Флаг для предотвращения бесконечного цикла refresh
+let isRefreshing = false
+let failedQueue: Array<{
+  resolve: (value: string | null) => void
+  reject: (error: unknown) => void
+}> = []
+
+const processQueue = (error: unknown, token: string | null = null) => {
+  failedQueue.forEach(({ resolve, reject }) => {
+    if (error) {
+      reject(error)
+    } else {
+      resolve(token)
+    }
+  })
+
+  failedQueue = []
+}
+
 // Добавляем перехватчик для установки токена
 api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   const token = Cookies.get('access_token')
@@ -199,31 +244,64 @@ api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 api.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error: AxiosError) => {
-    if (error.response?.status === 401) {
+    const originalRequest = error.config as RetryableAxiosRequestConfig
+
+    if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
+      if (isRefreshing) {
+        // Если уже идет процесс обновления токена, добавляем запрос в очередь
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject })
+        })
+          .then((token) => {
+            if (originalRequest.headers) {
+              originalRequest.headers.Authorization = `Bearer ${token}`
+            }
+            return api(originalRequest)
+          })
+          .catch((err) => {
+            return Promise.reject(err)
+          })
+      }
+
+      originalRequest._retry = true
+      isRefreshing = true
+
       try {
         const { data } = await authApi.refresh()
-        Cookies.set('access_token', data.access_token, {
+        const newToken = data.access_token
+
+        Cookies.set('access_token', newToken, {
           secure: true,
           sameSite: 'strict',
           expires: 1 / 24,
         })
-        // Повторяем запрос с новым токеном
-        const config = error.config
-        if (config && config.headers) {
-          config.headers.Authorization = `Bearer ${data.access_token}`
-          return api(config)
+
+        // Обновляем токен в заголовках оригинального запроса
+        if (originalRequest.headers) {
+          originalRequest.headers.Authorization = `Bearer ${newToken}`
         }
-      } catch {
+
+        processQueue(null, newToken)
+
+        return api(originalRequest)
+      } catch (refreshError) {
         // Если не удалось обновить токен, выходим из системы
+        processQueue(refreshError, null)
+
         Cookies.remove('access_token')
         Cookies.remove('refresh_token')
 
-        // Перенаправляем на страницу логина
-        if (typeof window !== 'undefined') {
+        // Перенаправляем на страницу логина только если мы в браузере
+        if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
           window.location.href = '/login'
         }
+
+        return Promise.reject(refreshError)
+      } finally {
+        isRefreshing = false
       }
     }
+
     return Promise.reject(error)
   },
 )

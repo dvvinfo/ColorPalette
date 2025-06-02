@@ -62,3 +62,42 @@ export interface NotificationCreateRequest {
 export interface NotificationCountResponse {
   count: number
 }
+
+// Bonus types
+export interface Bonus {
+  id: number
+  title: string
+  description: string
+  type: 'welcome' | 'promo' | 'cashback'
+  reward: string
+  wager_multiplier: number
+  is_active: boolean
+  status: string
+  participants_count: number
+  total_reward: number
+  promo_code: string | null
+  max_activations: number | null
+  activated_count: number
+  start_date: string
+  end_date: string | null
+}
+
+export interface BonusCreateRequest {
+  title: string
+  description: string
+  type: 'welcome' | 'promo' | 'cashback'
+  reward: string
+  wager_multiplier: number
+  promo_code?: string
+  max_activations?: number
+  start_date: string
+  end_date?: string
+}
+
+export interface BonusActivateRequest {
+  promo_code: string
+}
+
+export interface BonusResponse {
+  message: string
+}

@@ -1,7 +1,7 @@
 <template>
   <div
     ref="bonusCardRef"
-    class="bonus-card relative overflow-hidden rounded-xl p-6 text-white transition-transform hover:scale-105"
+    class="bonus-card flex flex-col relative overflow-hidden rounded-xl p-6 text-white transition-transform hover:scale-105"
     :class="backgroundClass"
   >
     <!-- Info Button -->
@@ -17,7 +17,8 @@
     </button>
 
     <!-- Main Content -->
-    <div class="relative z-10">
+    <div class="relative z-10 flex flex-col justify-between h-full flex-1">
+      <div class="">
       <!-- Title -->
       <h3 class="text-xl md:text-2xl font-bold mb-2">{{ title }}</h3>
 
@@ -44,8 +45,9 @@
           </div>
         </div>
       </div>
-
+    </div>
       <!-- Action Button -->
+       <div>
       <BaseButton
         :variant="buttonVariant"
         :size="buttonSize"
@@ -76,6 +78,7 @@
           {{ $t('bonus.invalidPromoCode') }}
         </button>
       </div>
+    </div>
     </div>
 
     <!-- Background Decoration -->

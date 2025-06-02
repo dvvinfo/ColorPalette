@@ -28,32 +28,49 @@
           </div>
         </div>
 
+        <!-- Loading State -->
+        <div v-if="loading" class="flex justify-center items-center py-12">
+          <div class="text-text-secondary">{{ $t('common.loading') }}</div>
+        </div>
+
+        <!-- Error State -->
+        <div
+          v-else-if="error"
+          class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6"
+        >
+          {{ error }}
+        </div>
+
         <!-- Bonuses Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div v-else class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           <UniversalBonus
             v-for="bonus in filteredBonuses"
             :key="bonus.id"
-            :title="$t(bonus.titleKey)"
-            :subtitle="bonus.subtitleKey ? $t(bonus.subtitleKey) : bonus.subtitle"
-            :amount="bonus.amount"
-            :description="bonus.descriptionKey ? $t(bonus.descriptionKey) : bonus.description"
-            :requirements="bonus.requirements"
-            :button-text="$t(bonus.buttonTextKey || 'bonus.activate')"
-            :button-variant="bonus.buttonVariant"
-            :disabled="bonus.disabled"
-            :needs-promo-code="bonus.needsPromoCode"
+            :title="bonus.title"
+            :subtitle="getSubtitle(bonus)"
+            :amount="bonus.reward"
+            :description="bonus.description"
+            :requirements="getRequirements(bonus)"
+            :button-text="getButtonText(bonus)"
+            :button-variant="getButtonVariant(bonus)"
+            :disabled="!bonus.is_active || bonus.isActivated"
+            :needs-promo-code="!!bonus.promo_code"
             :has-invalid-promo="bonus.hasInvalidPromo"
-            :background-type="bonus.backgroundType"
-            :background-image="bonus.backgroundImage"
-            :info-text="bonus.infoTextKey ? $t(bonus.infoTextKey) : bonus.infoText"
+            :background-type="getBackgroundType(bonus.type)"
+            :info-text="getInfoText(bonus)"
             :is-activated="bonus.isActivated"
-            @activate="handleActivateBonus(bonus.id, $event)"
+            @activate="handleActivateBonus(bonus, $event)"
             @invalid-promo="handleInvalidPromo(bonus.id)"
           />
         </div>
 
+        <!-- Empty State -->
+        <div v-if="!loading && !error && filteredBonuses.length === 0" class="text-center py-12">
+          <div class="text-text-secondary">{{ $t('bonuses.noBonuses') }}</div>
+        </div>
+
         <!-- Terms and Conditions -->
-        <div class="bg-card-bg rounded-lg p-6 border border-border">
+        <div class="bg-card-bg rounded-lg p-6">
           <h3 class="text-xl font-semibold text-text-primary mb-4">
             {{ $t('bonuses.termsTitle') }}
           </h3>
@@ -73,188 +90,171 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import UniversalBonus from '@/components/UniversalBonus.vue'
 import BackButton from '@/components/BackButton.vue'
 import BaseButton from '@/components/BaseButton.vue'
 import RightSidebar from '@/components/RightSidebar.vue'
 import { useI18n } from 'vue-i18n'
+import { bonusApi } from '@/services/api'
+import type { Bonus } from '@/types'
 
 const { t } = useI18n()
 const selectedCategory = ref('all')
+const loading = ref(false)
+const error = ref('')
 
 interface Category {
   id: string
   nameKey: string
 }
 
-interface BonusItem {
-  id: string
-  titleKey: string
-  subtitleKey?: string
-  subtitle?: string
-  amount?: string
-  descriptionKey?: string
-  description?: string
-  requirements?: {
-    deposit?: string
-    timer?: string
-    minAmount?: string
-  }
-  buttonTextKey?: string
-  buttonVariant?: 'primary' | 'secondary' | 'outline' | 'ghost'
-  disabled?: boolean
-  needsPromoCode?: boolean
+interface BonusWithState extends Bonus {
   hasInvalidPromo?: boolean
-  backgroundType?: 'red' | 'blue' | 'purple' | 'gradient'
-  backgroundImage?: string
-  infoTextKey?: string
-  infoText?: string
   isActivated?: boolean
-  category: string
 }
 
 const categories: Category[] = [
   { id: 'all', nameKey: 'bonuses.categories.all' },
   { id: 'welcome', nameKey: 'bonuses.categories.welcome' },
-  { id: 'deposit', nameKey: 'bonuses.categories.deposit' },
-  { id: 'freespins', nameKey: 'bonuses.categories.freespins' },
+  { id: 'promo', nameKey: 'bonuses.categories.promo' },
   { id: 'cashback', nameKey: 'bonuses.categories.cashback' },
-  { id: 'special', nameKey: 'bonuses.categories.special' },
 ]
 
-const bonuses = ref<BonusItem[]>([
-  {
-    id: 'promo-code',
-    titleKey: 'bonuses.promoCode.title',
-    subtitleKey: 'bonuses.promoCode.subtitle',
-    descriptionKey: 'bonuses.promoCode.description',
-    buttonTextKey: 'bonus.activate',
-    buttonVariant: 'primary',
-    needsPromoCode: true,
-    backgroundType: 'red',
-    infoTextKey: 'bonuses.promoCode.info',
-    category: 'special',
-  },
-  {
-    id: 'tiktok-bonus',
-    titleKey: 'bonuses.tiktok.title',
-    subtitleKey: 'bonuses.tiktok.subtitle',
-    amount: 'На депозит от 600 ₽',
-    descriptionKey: 'bonuses.tiktok.description',
-    requirements: {
-      deposit: '600 ₽',
-    },
-    buttonTextKey: 'bonus.activate',
-    buttonVariant: 'primary',
-    backgroundType: 'purple',
-    infoTextKey: 'bonuses.tiktok.info',
-    category: 'special',
-  },
-  {
-    id: 'welcome-bonus',
-    titleKey: 'bonuses.welcome.title',
-    subtitleKey: 'bonuses.welcome.subtitle',
-    amount: 'Первый депозит от 550 ₽',
-    description: 'До завершения 03:00:00',
-    requirements: {
-      deposit: '550 ₽',
-      timer: '03:00:00',
-    },
-    buttonTextKey: 'bonus.activate',
-    buttonVariant: 'primary',
-    backgroundType: 'blue',
-    infoTextKey: 'bonuses.welcome.info',
-    category: 'welcome',
-  },
-  {
-    id: 'deposit-bonus',
-    titleKey: 'bonuses.depositBonus.title',
-    subtitleKey: 'bonuses.depositBonus.subtitle',
-    amount: 'Осталось внести еще 1000 ₽',
-    descriptionKey: 'bonuses.depositBonus.description',
-    requirements: {
-      minAmount: '1 000 ₽',
-      timer: '02:00:00',
-    },
-    buttonTextKey: 'bonus.activate',
-    buttonVariant: 'primary',
-    backgroundType: 'gradient',
-    infoTextKey: 'bonuses.depositBonus.info',
-    category: 'deposit',
-  },
-  {
-    id: 'weekend-bonus',
-    titleKey: 'bonuses.weekend.title',
-    subtitleKey: 'bonuses.weekend.subtitle',
-    amount: 'До 50 000 ₽',
-    description: 'Минимальный депозит 1000 ₽',
-    requirements: {
-      deposit: '1 000 ₽',
-    },
-    buttonTextKey: 'bonus.activate',
-    buttonVariant: 'primary',
-    backgroundType: 'blue',
-    infoTextKey: 'bonuses.weekend.info',
-    category: 'special',
-  },
-  {
-    id: 'cashback-weekly',
-    titleKey: 'bonuses.cashbackWeekly.title',
-    subtitleKey: 'bonuses.cashbackWeekly.subtitle',
-    amount: 'До 25 000 ₽',
-    description: 'Каждый понедельник',
-    buttonTextKey: 'bonus.activate',
-    buttonVariant: 'primary',
-    backgroundType: 'purple',
-    infoTextKey: 'bonuses.cashbackWeekly.info',
-    category: 'cashback',
-  },
-])
+const bonuses = ref<BonusWithState[]>([])
 
 const filteredBonuses = computed(() => {
   if (selectedCategory.value === 'all') {
     return bonuses.value
   }
-  return bonuses.value.filter((bonus) => bonus.category === selectedCategory.value)
+  return bonuses.value.filter((bonus) => bonus.type === selectedCategory.value)
 })
 
-const handleActivateBonus = (bonusId: string, promoCode?: string) => {
-  const bonus = bonuses.value.find((b) => b.id === bonusId)
-  if (!bonus) return
+const getSubtitle = (bonus: BonusWithState): string => {
+  if (bonus.end_date) {
+    const endDate = new Date(bonus.end_date)
+    return `${t('bonuses.validUntil')}: ${endDate.toLocaleDateString()}`
+  }
+  return ''
+}
 
-  console.log(
-    t('bonuses.debug.activating'),
-    bonusId,
-    promoCode ? `${t('bonuses.debug.withPromoCode')}: ${promoCode}` : '',
-  )
+const getRequirements = (bonus: BonusWithState) => {
+  const requirements: Record<string, string> = {}
 
-  // Эмуляция активации бонуса
-  if (promoCode && bonusId === 'promo-code') {
-    // Проверка промокода (эмуляция)
-    if (promoCode.toLowerCase() === 'test123') {
+  if (bonus.wager_multiplier) {
+    requirements.wager = `${t('bonuses.wager')}: x${bonus.wager_multiplier}`
+  }
+
+  if (bonus.max_activations) {
+    const remaining = bonus.max_activations - bonus.activated_count
+    requirements.activations = `${t('bonuses.activationsLeft')}: ${remaining}`
+  }
+
+  return Object.keys(requirements).length > 0 ? requirements : undefined
+}
+
+const getButtonText = (bonus: BonusWithState): string => {
+  if (bonus.isActivated) {
+    return t('bonuses.activated')
+  }
+  if (!bonus.is_active) {
+    return t('bonuses.inactive')
+  }
+  if (bonus.promo_code) {
+    return t('bonuses.enterPromoCode')
+  }
+  return t('bonus.activate')
+}
+
+const getButtonVariant = (bonus: BonusWithState): 'primary' | 'secondary' | 'outline' | 'ghost' => {
+  if (bonus.isActivated || !bonus.is_active) {
+    return 'outline'
+  }
+  return 'primary'
+}
+
+const getBackgroundType = (type: string): 'red' | 'blue' | 'purple' | 'gradient' => {
+  switch (type) {
+    case 'welcome':
+      return 'blue'
+    case 'promo':
+      return 'red'
+    case 'cashback':
+      return 'purple'
+    default:
+      return 'gradient'
+  }
+}
+
+const getInfoText = (bonus: BonusWithState): string => {
+  let info = bonus.description
+  if (bonus.wager_multiplier) {
+    info += ` ${t('bonuses.wagerInfo', { multiplier: bonus.wager_multiplier })}`
+  }
+  return info
+}
+
+const loadBonuses = async () => {
+  try {
+    loading.value = true
+    error.value = ''
+    const response = await bonusApi.getAll()
+    bonuses.value = response.data.map((bonus) => ({
+      ...bonus,
+      hasInvalidPromo: false,
+      isActivated: false,
+    }))
+  } catch (err: unknown) {
+    console.error('Error loading bonuses:', err)
+    const errorMessage =
+      err instanceof Error && 'response' in err && err.response
+        ? (err.response as { data?: { error?: string } }).data?.error
+        : undefined
+    error.value = errorMessage || t('bonuses.loadError')
+  } finally {
+    loading.value = false
+  }
+}
+
+const handleActivateBonus = async (bonus: BonusWithState, promoCode?: string) => {
+  if (!bonus.is_active || bonus.isActivated) return
+
+  try {
+    if (bonus.promo_code && promoCode) {
+      // Активация по промокоду
+      await bonusApi.activate({ promo_code: promoCode })
       bonus.isActivated = true
-      bonus.buttonTextKey = 'bonuses.activated'
-      bonus.disabled = true
+      bonus.hasInvalidPromo = false
       alert(t('bonuses.promoActivated'))
-    } else {
+    } else if (!bonus.promo_code) {
+      // Обычная активация (здесь может быть другая логика)
+      bonus.isActivated = true
+      alert(t('bonuses.bonusActivated', { title: bonus.title }))
+    }
+  } catch (err: unknown) {
+    console.error('Error activating bonus:', err)
+    if (bonus.promo_code && promoCode) {
       bonus.hasInvalidPromo = true
       setTimeout(() => {
         bonus.hasInvalidPromo = false
       }, 3000)
     }
-  } else {
-    bonus.isActivated = true
-    bonus.buttonTextKey = 'bonuses.activated'
-    bonus.disabled = true
-    alert(t('bonuses.bonusActivated', { title: t(bonus.titleKey) }))
+    const errorMessage =
+      err instanceof Error && 'response' in err && err.response
+        ? (err.response as { data?: { error?: string } }).data?.error
+        : undefined
+    alert(errorMessage || t('bonuses.activationError'))
   }
 }
 
-const handleInvalidPromo = (bonusId: string) => {
-  console.log(t('bonuses.debug.invalidPromoCode'), bonusId)
+const handleInvalidPromo = (bonusId: number) => {
+  console.log('Invalid promo code for bonus:', bonusId)
   alert(t('bonus.invalidPromoCode'))
 }
+
+onMounted(() => {
+  loadBonuses()
+})
 </script>
 
 <style scoped>
