@@ -1,6 +1,7 @@
 import axios from 'axios'
 import type { AxiosResponse, AxiosError, InternalAxiosRequestConfig } from 'axios'
 import Cookies from 'js-cookie'
+import type { UserNotification, NotificationCreateRequest } from '@/types'
 
 // const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 
@@ -12,7 +13,7 @@ const getBaseURL = () => {
     PROD: import.meta.env.PROD,
     MODE: import.meta.env.MODE,
     hostname: typeof window !== 'undefined' ? window.location.hostname : 'server',
-    VITE_API_BASE_URL: import.meta.env.VITE_API_BASE_URL
+    VITE_API_BASE_URL: import.meta.env.VITE_API_BASE_URL,
   })
 
   // В режиме разработки используем Vite прокси
@@ -128,14 +129,12 @@ export const userApi = {
 
   updateUser: (id: number, data: Partial<User>) => api.put<User>(`/api/user/${id}`, data),
 
-    setUserRole: (userId: number, roleId: number) =>
+  setUserRole: (userId: number, roleId: number) =>
     api.put<StatusResponse>(`/api/user/${userId}/role`, { role_id: roleId }),
 
   setUserBalance: (userId: number, amount: number) =>
     api.put<StatusResponse>(`/api/user/${userId}/balance`, { amount }),
 }
-
-
 
 export const balanceApi = {
   getBalance: () => api.get<{ balance: number }>('/api/balance/'),
@@ -152,11 +151,39 @@ export const gamesApi = {
 
   getById: (id: number) => api.get<Game>(`/api/game/${id}`),
 
-  create: (data: { name: string; chance: number; rtp: number }) => api.post<number>('/api/game/', data),
+  create: (data: { name: string; chance: number; rtp: number }) =>
+    api.post<number>('/api/game/', data),
 
   update: (id: number, data: Partial<Game>) => api.put<StatusResponse>(`/api/game/${id}`, data),
 
-  play: (id: number, data: { bet: number }) => api.post<GamePlayResponse>(`/api/game/${id}/play`, data),
+  play: (id: number, data: { bet: number }) =>
+    api.post<GamePlayResponse>(`/api/game/${id}/play`, data),
+}
+
+export const notificationApi = {
+  // GET /notification/ - получить список уведомлений
+  getAll: () => api.get<UserNotification[]>('/api/notification/'),
+
+  // PATCH /notification/{id} - переключить статус уведомления
+  toggleStatus: (id: number) => api.patch<StatusResponse>(`/api/notification/${id}`),
+
+  // PATCH /notification/all - прочитать все уведомления
+  readAll: () => api.patch<StatusResponse>('/api/notification/all'),
+
+  // GET /notification/count - получить количество уведомлений
+  getCount: (status?: 'read' | 'unread') => {
+    const params = status ? `?status=${status}` : ''
+    return api.get<number>(`/api/notification/count${params}`)
+  },
+
+  // POST /notification/ - создать уведомление
+  create: (data: NotificationCreateRequest) => api.post<StatusResponse>('/api/notification/', data),
+
+  // DELETE /notification/{id} - удалить уведомление
+  delete: (id: number) => api.delete<StatusResponse>(`/api/notification/${id}`),
+
+  // DELETE /notification/all - удалить все уведомления
+  deleteAll: () => api.delete<StatusResponse>('/api/notification/all'),
 }
 
 // Добавляем перехватчик для установки токена
@@ -186,7 +213,7 @@ api.interceptors.response.use(
           config.headers.Authorization = `Bearer ${data.access_token}`
           return api(config)
         }
-            } catch {
+      } catch {
         // Если не удалось обновить токен, выходим из системы
         Cookies.remove('access_token')
         Cookies.remove('refresh_token')

@@ -18,6 +18,7 @@
     "back": "Back",
     "next": "Next",
     "submit": "Submit",
+    "retry": "Try again",
     "inDevelopment": "Under Development",
     "inDevelopmentText": "This section will be available soon.",
     "stayTuned": "Stay tuned for updates!"
@@ -354,7 +355,21 @@
   },
   "notifications": {
     "noNotifications": "No new notifications",
-    "clearAll": "Clear all notifications"
+    "clearAll": "Clear all notifications",
+    "markAllRead": "Mark all as read",
+    "markRead": "Mark as read",
+    "markUnread": "Mark as unread",
+    "readAt": "Read at",
+    "unread": "Unread",
+    "total": "Total",
+    "confirmClearAll": "Are you sure you want to delete all notifications?",
+    "types": {
+      "newUser": "New User",
+      "info": "Info",
+      "warning": "Warning",
+      "success": "Success",
+      "error": "Error"
+    }
   },
   "promotions": {
     "specialOffer": "Special Promotion",

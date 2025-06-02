@@ -34,3 +34,31 @@ export interface Banner {
 }
 
 export type ThemeOption = 'default' | 'red' | 'blue' | 'green' | 'purple'
+
+// Notification types
+export interface Notification {
+  id: number
+  title: string
+  message: string
+  type: 'new_user' | 'info' | 'warning' | 'success' | 'error'
+  created_at: string
+}
+
+export interface UserNotification {
+  id: number
+  user_id: number
+  notification_id: number
+  is_read: boolean
+  read_at: string | null
+  notification: Notification
+}
+
+export interface NotificationCreateRequest {
+  title: string
+  message: string
+  type: 'new_user' | 'info' | 'warning' | 'success' | 'error'
+}
+
+export interface NotificationCountResponse {
+  count: number
+}
