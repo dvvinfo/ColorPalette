@@ -186,6 +186,7 @@
     "accountBalance": "Account Balance",
     "cashier": "Cashier",
     "activeBonuses": "Active Bonuses",
+    "activatedBonuses": "Activated Bonuses",
     "availableBonuses": "Available Bonuses",
     "available": "Available",
     "noBonuses": "You don't have any bonuses yet",
@@ -234,6 +235,7 @@
     "depositAmountFrom": "Deposit amount from",
     "promoCode": "Promo code",
     "invalidPromoCode": "Invalid promo code",
+    "invalidPromoCodeMessage": "The entered promo code is invalid or already used",
     "title": "Bonus"
   },
   "bonuses": {
@@ -243,7 +245,9 @@
     "activated": "Activated",
     "inactive": "Inactive",
     "promoActivated": "Promo code successfully activated!",
+    "promoActivatedMessage": "Promo code '{code}' successfully activated",
     "bonusActivated": "Bonus \"{title}\" successfully activated!",
+    "bonusActivatedMessage": "Bonus successfully added to your account",
     "validUntil": "Valid until",
     "wager": "Wagering",
     "wagerInfo": " Wagering x{multiplier} required.",
@@ -252,6 +256,7 @@
     "noBonuses": "No bonuses available",
     "loadError": "Error loading bonuses",
     "activationError": "Error activating bonus",
+    "activationErrorMessage": "Failed to activate bonus. Please try again later",
     "reward": "Reward",
     "debug": {
       "activating": "Activating bonus:",

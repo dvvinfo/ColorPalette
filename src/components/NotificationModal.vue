@@ -78,7 +78,7 @@
           <div class="flex justify-between items-start mb-2">
             <div class="flex items-center gap-2">
               <div
-                class="w-2 h-2 rounded-full flex-shrink-0 mt-2"
+                class="w-2 h-2 rounded-full flex-shrink-0"
                 :class="notification.is_read ? 'bg-gray-500' : 'bg-blue-500'"
               ></div>
               <div class="font-bold text-white">{{ notification.notification.title }}</div>
@@ -137,6 +137,7 @@
                   viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
+                  class="w-5 h-5"
                 >
                   <path
                     fill-rule="evenodd"

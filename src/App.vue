@@ -1,19 +1,17 @@
 <script setup lang="ts">
-import { ref} from 'vue'
+import { ref } from 'vue'
 import AuthModal from './components/AuthModal.vue'
 import RegisterModal from './components/RegisterModal.vue'
 import AppHeader from './components/AppHeader.vue'
 import NotificationModal from './components/NotificationModal.vue'
 import AppFooter from './components/AppFooter.vue'
 import DepositModal from './components/DepositModal.vue'
+import Toast from './components/Toast.vue'
 const showLoginModal = ref(false)
 const showRegisterModal = ref(false)
 const showMessages = ref(false)
 const showNotifications = ref(false)
 const showDeposit = ref(false)
-
-
-
 </script>
 
 <template>
@@ -37,6 +35,9 @@ const showDeposit = ref(false)
     <!-- Уведомления теперь используют store и не нуждаются в пропсах -->
     <NotificationModal v-if="showNotifications" @close="showNotifications = false" />
     <DepositModal v-if="showDeposit" @close="showDeposit = false" />
+
+    <!-- Toast уведомления -->
+    <Toast />
   </div>
 </template>
 

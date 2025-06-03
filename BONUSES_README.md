@@ -166,6 +166,15 @@ Content-Type: application/json
 GET /api/bonus/
 ```
 
+### Activate Bonus (By ID)
+
+```http
+POST /api/bonus/activate/{id}
+```
+
+**Description:** Activate a regular bonus by its ID
+**Body:** Empty or {}
+
 ## Интеграция с компонентами
 
 Система бонусов интегрирована с существующими компонентами:
@@ -193,3 +202,119 @@ GET /api/bonus/
 2. **Обновление токенов**: Автоматическое обновление истекших токенов без потери пользовательской сессии
 3. **Предотвращение циклов**: Защита от бесконечных циклов при обновлении токенов
 4. **Валидация на сервере**: Все данные валидируются на сервере перед обработкой
+
+## 🚀 API Endpoints
+
+All endpoints require authentication via Bearer token.
+
+### Get Bonuses
+
+```http
+GET /api/bonus/
+```
+
+**Description:** Retrieve list of all available bonuses
+**Response:** Array of Bonus objects
+
+### Create Bonus
+
+```http
+POST /api/bonus/
+```
+
+**Description:** Create a new bonus (admin only)
+**Body:**
+
+```json
+{
+  "title": "Welcome Bonus",
+  "description": "Get 100% bonus on first deposit",
+  "type": "welcome",
+  "reward": "100%",
+  "wager_multiplier": 35,
+  "promo_code": "WELCOME100",
+  "max_activations": 1000,
+  "start_date": "2024-01-01T00:00:00Z",
+  "end_date": "2024-12-31T23:59:59Z"
+}
+```
+
+### Delete Bonus
+
+```http
+DELETE /api/bonus/{id}
+```
+
+**Description:** Delete a bonus by ID (admin only)
+
+### Activate Bonus (Promo Code)
+
+```http
+POST /api/bonus/activate
+```
+
+**Description:** Activate a bonus using a promo code
+**Body:**
+
+```json
+{
+  "promo_code": "WELCOME100"
+}
+```
+
+### Activate Bonus (By ID)
+
+```http
+POST /api/bonus/activate/{id}
+```
+
+**Description:** Activate a regular bonus by its ID
+**Body:** Empty or {}
+
+## 📊 Data Structure
+
+### Bonus Object
+
+```typescript
+interface Bonus {
+  id: number
+  title: string
+  description: string
+  type: 'welcome' | 'promo' | 'cashback'
+  reward: string
+  wager_multiplier: number
+  is_active: boolean
+  status: string
+  participants_count: number
+  total_reward: number
+  promo_code: string | null
+  max_activations: number | null
+  activated_count: number
+  start_date: string
+  end_date: string | null
+}
+```
+
+### Request/Response Types
+
+```typescript
+interface BonusCreateRequest {
+  title: string
+  description: string
+  type: 'welcome' | 'promo' | 'cashback'
+  reward: string
+  wager_multiplier: number
+  promo_code?: string
+  max_activations?: number
+  start_date: string
+  end_date?: string
+}
+
+interface BonusActivateRequest {
+  promo_code: string
+}
+
+interface BonusResponse {
+  message: string
+}
+```

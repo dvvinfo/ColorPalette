@@ -372,6 +372,7 @@
     "accountBalance": "На счете",
     "cashier": "Касса",
     "activeBonuses": "Активные бонусы",
+    "activatedBonuses": "Активированные бонусы",
     "availableBonuses": "Доступные бонусы",
     "available": "Доступен",
     "noBonuses": "У вас пока нет бонусов",
@@ -420,6 +421,7 @@
     "depositAmountFrom": "На сумму депозитов от",
     "promoCode": "Промокод",
     "invalidPromoCode": "Неверный промокод",
+    "invalidPromoCodeMessage": "Введенный промокод недействителен или уже использован",
     "title": "Бонус"
   },
   "bonuses": {
@@ -429,7 +431,9 @@
     "activated": "Активирован",
     "inactive": "Неактивен",
     "promoActivated": "Промокод успешно активирован!",
+    "promoActivatedMessage": "Промокод '{code}' успешно активирован",
     "bonusActivated": "Бонус \"{title}\" успешно активирован!",
+    "bonusActivatedMessage": "Бонус успешно добавлен в ваш аккаунт",
     "validUntil": "Действует до",
     "wager": "Отыгрыш",
     "wagerInfo": " Требуется отыгрыш x{multiplier}.",
@@ -438,6 +442,7 @@
     "noBonuses": "Нет доступных бонусов",
     "loadError": "Ошибка загрузки бонусов",
     "activationError": "Ошибка активации бонуса",
+    "activationErrorMessage": "Не удалось активировать бонус. Попробуйте позже",
     "reward": "Награда",
     "debug": {
       "activating": "Активация бонуса:",

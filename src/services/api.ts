@@ -215,6 +215,9 @@ export const bonusApi = {
 
   // POST /bonus/activate - активировать бонус по промокоду
   activate: (data: BonusActivateRequest) => api.post<BonusResponse>('/api/bonus/activate', data),
+
+  // POST /bonus/activate/{id} - активировать бонус по ID
+  activateById: (id: number) => api.post<BonusResponse>(`/api/bonus/activate/${id}`, {}),
 }
 
 // Флаг для предотвращения бесконечного цикла refresh

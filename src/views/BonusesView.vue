@@ -91,15 +91,18 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import UniversalBonus from '@/components/UniversalBonus.vue'
 import BackButton from '@/components/BackButton.vue'
 import BaseButton from '@/components/BaseButton.vue'
 import RightSidebar from '@/components/RightSidebar.vue'
-import { useI18n } from 'vue-i18n'
+
+import { useToast } from '@/composables/useToast'
 import { bonusApi } from '@/services/api'
 import type { Bonus } from '@/types'
 
 const { t } = useI18n()
+const { showSuccess, showError } = useToast()
 const selectedCategory = ref('all')
 const loading = ref(false)
 const error = ref('')
@@ -124,10 +127,16 @@ const categories: Category[] = [
 const bonuses = ref<BonusWithState[]>([])
 
 const filteredBonuses = computed(() => {
-  if (selectedCategory.value === 'all') {
-    return bonuses.value
+  let filtered = bonuses.value.map((bonus) => ({
+    ...bonus,
+    isActivated: bonus.activated_count > 0,
+  }))
+
+  if (selectedCategory.value !== 'all') {
+    filtered = filtered.filter((bonus) => bonus.type === selectedCategory.value)
   }
-  return bonuses.value.filter((bonus) => bonus.type === selectedCategory.value)
+
+  return filtered
 })
 
 const getSubtitle = (bonus: BonusWithState): string => {
@@ -198,6 +207,8 @@ const loadBonuses = async () => {
   try {
     loading.value = true
     error.value = ''
+
+    // Загружаем все бонусы
     const response = await bonusApi.getAll()
     bonuses.value = response.data.map((bonus) => ({
       ...bonus,
@@ -223,13 +234,22 @@ const handleActivateBonus = async (bonus: BonusWithState, promoCode?: string) =>
     if (bonus.promo_code && promoCode) {
       // Активация по промокоду
       await bonusApi.activate({ promo_code: promoCode })
-      bonus.isActivated = true
+      // Обновляем счетчик активации
+      bonus.activated_count += 1
       bonus.hasInvalidPromo = false
-      alert(t('bonuses.promoActivated'))
+      showSuccess(
+        t('bonuses.promoActivated'),
+        t('bonuses.promoActivatedMessage', { code: promoCode }),
+      )
     } else if (!bonus.promo_code) {
-      // Обычная активация (здесь может быть другая логика)
-      bonus.isActivated = true
-      alert(t('bonuses.bonusActivated', { title: bonus.title }))
+      // Активация обычного бонуса по ID
+      await bonusApi.activateById(bonus.id)
+      // Обновляем счетчик активации
+      bonus.activated_count += 1
+      showSuccess(
+        t('bonuses.bonusActivated', { title: bonus.title }),
+        t('bonuses.bonusActivatedMessage'),
+      )
     }
   } catch (err: unknown) {
     console.error('Error activating bonus:', err)
@@ -243,13 +263,13 @@ const handleActivateBonus = async (bonus: BonusWithState, promoCode?: string) =>
       err instanceof Error && 'response' in err && err.response
         ? (err.response as { data?: { error?: string } }).data?.error
         : undefined
-    alert(errorMessage || t('bonuses.activationError'))
+    showError(t('bonuses.activationError'), errorMessage || t('bonuses.activationErrorMessage'))
   }
 }
 
 const handleInvalidPromo = (bonusId: number) => {
   console.log('Invalid promo code for bonus:', bonusId)
-  alert(t('bonus.invalidPromoCode'))
+  showError(t('bonus.invalidPromoCode'), t('bonus.invalidPromoCodeMessage'))
 }
 
 onMounted(() => {
